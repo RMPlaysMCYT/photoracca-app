@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+<img style="" src="photoraccalogo.png">
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Photoracca App
+### Version: 0.1.0-Alpha
+### Features:
+- Add up to 4 shots
+- Locally stored on your device, once close you can't retrived it back
+- Free and Open Source For Personal usage even to everyone who wants to get acc
+- Native App to work offline (Coming soon)
 
-## Available Scripts
+### Upcoming Featues:
+- Mobile App Support
+- Working on mobile so stick to PC/Web for now
+- Public Release 
 
-In the project directory, you can run:
+### Platform Availability:
 
-### `npm start`
+| Platforms | Web | App |
+|---|---|---|
+| Windows | ✅ | 🏗️ |
+| MacOS   | ✅ | 🏗️ |
+| Linux   | ✅ | 🏗️ |
+| Android | 🏗️ | 🏗️ |
+| FreeBSD | 🏗️ | 🏗️ |
+| OpenBSD | 🏗️ | 🏗️ |
+| HaikuOS | 🏗️ | 🏗️ |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### LICENSE:
+- REPO: **MIT License**
+- Binary: **Apache License** (Personal and small businesses) **Proprietary** (Commercial Usage even to big scale ones)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+_____
+### Why I created this app?
+Well I just watched from a YouTube Tutorial which sounds like a tutorial hell thingy yet that's where most of use come from tho and there are lots of features will be available in the future and also as I observed that:
 
-### `npm test`
+### `Background of the Study`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Some Students are trying to take a moment in every events yet they can't have afford to access to it despite of the price and also the printing and release of the photos after the event was taking too long and it takes 2 - 4 days approximately and even students can't customize their photos before it print and keep as thier souviener
 
-### `npm run build`
+### `Target Audience`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Anyone and mostly Students even instructors who want to set-up the photobooth right at the computer with camera or even fingertips so they can keep the memories as they enjoy with
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+_____
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Why FOSS?
+Well that was my idea to go to especially when it comes to these stuff some make it proprietary, but we don't blame them because that's what they want tho so mine was different but yeah, when it comes to monetization I can accept PayPal and GCash to continue this work and other projects
 
-### `npm run eject`
+### Acknowledgement:
+Thanks to kuya Mahk Johnrex for motivate me creating an application using ReactJS as of now, Thanks to the teachers (Sir Franco, Maam Elizabeth, Sir Shane and Maam Mora for appreciating my Idea) and to Sir Alvin and The Honeycomb for making me having an idea to create this photobooth app to ensure that anyone can access to this. Also to my fellow classmates (Sahania, Mary Joy, Madilyn, Sharmaine, Cyrille(Stubborn a bit yet she can understand me), Glenda, Sherriemae and everyone who witness my effort to create this WebApp)
+___
+### Support:
+Even though I'm an Minecraft Add-on creator yet I tried to create a application like this tho at least I tried to create a non-minecraft stuff as long as I can enjoy and benefit to others as well, you can support me via:
+### Patreon [Click Here](https://www.patreon.com/RMPlaysMC_YT)
+### GCash (R***el M. 09380355516)
+### PayPal [Click Here](https://paypal.me/rmplaysmcyt)
+___
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Frameworks used:
+<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
+<img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Libraries and References
+- FileSaverJS [MIT LICENSE](https://www.npmjs.com/package/file-saver)

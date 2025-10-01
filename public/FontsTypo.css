@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Inter-Max';
+    src: url(https://fonts.bunny.net/css?family=inter-tight:700) format('ttf');
+}
+
+@font-face {
+    font-family: 'Inter-Default';
+    src: url(https://fonts.bunny.net/css?family=inter-tight) format('ttf');
+}
