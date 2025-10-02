@@ -347,14 +347,17 @@ function App() {
               </button>
             </div>
           </div>
-          <div>
-            <div className="footermain">
+          <div className="footermain">
+            <div className="footermain2">
               <div className="footer-text">
                 © 2025 Ronnel Mitra, Apache License 2.0
-                <a href="https://github.com/RMPlaysMCYT" target="_blank">
+                <a href="https://github.com/RMPlaysMCYT" target="_blank" rel="noreferrer">
                   {" "}
                   GitHub
                 </a>
+              </div>
+              <div>
+                0.1.0-Alpha
               </div>
             </div>
           </div>

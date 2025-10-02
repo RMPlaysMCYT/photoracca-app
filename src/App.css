@@ -6,6 +6,7 @@
   text-decoration: none
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @font-face {
     font-family: 'Inter-Max';
@@ -127,8 +128,14 @@ select{
   bottom: 0;
   padding: 20px;
   background-image: linear-gradient(#f0f0f0 3px, #d5c5ff);
+}
+.footermain2{
+  max-width: 1400px;
+  width: 90%;
+  margin: auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .CloseButton{
@@ -177,4 +184,11 @@ canvas{
   margin-bottom: 15px;
   border-radius: 5px;
   font-weight: bold;
+}
+
+.title{
+  font-family: 'Inter-Max';
+  font-size: 30px;
+  text-align: center;
+  padding: 10px 0 0 0;
 }

@@ -59,6 +59,7 @@ ___
 ### Frameworks used:
 <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
 <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
+<img src="https://img.shields.io/badge/Electron-2B2E3A?style=for-the-badge&logo=electron&logoColor=9FEAF9>
 
 ### Libraries and References
 - FileSaverJS [MIT LICENSE](https://www.npmjs.com/package/file-saver)
