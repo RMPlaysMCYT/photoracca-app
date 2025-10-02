@@ -1,6 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 
+// import closeImage from "./assets/pictures/closeImage.png";
+
+
 import "./App.css";
 // import logo from './logo/PhotoRaccaLogo.png';
 
@@ -270,6 +273,19 @@ function App() {
     );
   };
 
+
+const CloseWindow = () => {
+  const { remote } = window.require ? window.require('electron') : {};
+  if (remote) {
+    const window = remote.getCurrentWindow();
+    window.close();
+  } else {
+    // Fallback for browser
+    window.close();
+  }
+};
+
+
   return (
     <div className="App">
       <div
@@ -304,6 +320,11 @@ function App() {
         <div>
           <div className="title">
             <PhotoraccaLogo />
+            <div>
+              <button className="close-button" onClick={CloseWindow}>
+                X
+              </button>
+            </div>
           </div>
           <div className="CameraAppMain">
             <video className="VideoFrame" ref={videoRef}></video>
@@ -338,7 +359,7 @@ function App() {
             className={"Resultas" + (hasPhotoShotted ? "hasPhotoShotted" : "")}
           >
             <canvas ref={photoReferencial}></canvas>
-            <div claclassNames="Buttons2">
+            <div className="Buttons2">
               <button className="CloseButton" onClick={ClosePhoto}>
                 Close
               </button>

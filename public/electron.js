@@ -5,8 +5,9 @@ const path = require('path');
 function createWindow() {
   const mainWindow = new BrowserWindow({
     autoHideMenuBar: true,
-    width: 1200,
-    height: 800,
+    frame: false,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
