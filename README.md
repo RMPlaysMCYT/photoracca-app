@@ -47,7 +47,7 @@ _____
 Well that was my idea to go to especially when it comes to these stuff some make it proprietary, but we don't blame them because that's what they want tho so mine was different but yeah, when it comes to monetization I can accept PayPal and GCash to continue this work and other projects
 
 ### Acknowledgement:
-Thanks to kuya Mahk Johnrex for motivate me creating an application using ReactJS as of now, Thanks to the teachers (Sir Franco, Maam Elizabeth, Sir Shane and Maam Mora for appreciating my Idea) and to Sir Alvin and The Honeycomb for making me having an idea to create this photobooth app to ensure that anyone can access to this. Also to my fellow classmates (Sahania, Mary Joy, Madilyn, Sharmaine, Cyrille(Stubborn a bit yet she can understand me), Glenda, Sherriemae and everyone who witness my effort to create this WebApp)
+Thanks to kuya Mahk Johnrex for motivate me creating an application using ReactJS as of now, Thanks to the teachers (Sir Franco, Maam Elizabeth, Sir Shane and Maam Mora for appreciating my Idea). Also to my fellow classmates (Sahania, Mary Joy, Madilyn, Sharmaine, Cyrille(Stubborn a bit yet she can understand me), Glenda, Sherriemae and everyone who witness my effort to create this WebApp)
 ___
 ### Support:
 Even though I'm an Minecraft Add-on creator yet I tried to create a application like this tho at least I tried to create a non-minecraft stuff as long as I can enjoy and benefit to others as well, you can support me via:
