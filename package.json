@@ -1,28 +1,60 @@
 {
-  "name": "photoracca-desktop",
-  "version": "0.1.0",
+  "name": "Photoracca-App",
+  "version": "0.1.0-Alpha",
+  "description": "React + Electron app",
+  "main": "public/electron.js",
+  "homepage": "./",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "electron-is-dev": "^2.0.0",
+    "file-saver": "^2.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
+    "electron": "^22.0.0",
+    "electron-builder": "^23.6.0",
+    "tailwindcss": "^4.1.14",
+    "wait-on": "^7.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-build": "npm run build && electron-builder",
+    "build-win": "npm run build && electron-builder --win",
+    "build-mac": "npm run build && electron-builder --mac",
+    "build-linux": "npm run build && electron-builder --linux",
+    "dist": "npm run electron-build",
+    "pack": "npm run build && electron-builder --dir"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "build": {
+    "appId": "com.rmplaysmcyt.github.io.photoraccaapp",
+    "productName": "PhotoRacca App",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "public/electron.js",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   },
   "browserslist": {
     "production": [
