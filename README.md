@@ -6,7 +6,7 @@
 - Add up to 4 shots
 - Locally stored on your device, once close you can't retrived it back
 - Free and Open Source For Personal usage even to everyone who wants to get acc
-- Native App to work offline (Coming soon)
+- Native App to work offline
 
 ### Upcoming Featues:
 - Mobile App Support
@@ -18,7 +18,7 @@
 | Platforms | Web | App |
 |---|---|---|
 | Windows | ✅ | 🏗️ |
-| MacOS   | ✅ | 🏗️ |
+| MacOS   | 🏗️ | 🏗️ |
 | Linux   | ✅ | 🏗️ |
 | Android | 🏗️ | 🏗️ |
 | FreeBSD | 🏗️ | 🏗️ |
