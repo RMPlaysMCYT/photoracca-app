@@ -57,9 +57,11 @@ Even though I'm an Minecraft Add-on creator yet I tried to create a application 
 ___
 
 ### Frameworks used:
+<div style="align: center">
 <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
 <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
 <img src="https://img.shields.io/badge/Electron-2B2E3A?style=for-the-badge&logo=electron&logoColor=9FEAF9">
+</div>
 
 ### Libraries and References
 - FileSaverJS [MIT LICENSE](https://www.npmjs.com/package/file-saver)
