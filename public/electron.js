@@ -8,6 +8,7 @@ function createWindow() {
     frame: false,
     width: 1920,
     height: 1080,
+    icon: path.join(__dirname, 'favicon.ico'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

@@ -1,12 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { saveAs } from "file-saver";
-
-// import closeImage from "./assets/pictures/closeImage.png";
-
-
 import "./App.css";
-// import logo from './logo/PhotoRaccaLogo.png';
-
 import PhotoraccaLogo from "./logo";
 
 function App() {
@@ -14,10 +8,9 @@ function App() {
   const photoReferencial = useRef(null);
 
   const [countdown, setCountdown] = useState(0);
-
   const [isTakingPhotos, setIsTakingPhotos] = useState(false);
-
   const [hasPhotoShotted, setHasPhotoShotted] = useState(false);
+  const [photoMode, setPhotoMode] = useState("single");
 
   const getVideoCameraAPI = () => {
     if (!videoRef.current) return;
@@ -40,14 +33,11 @@ function App() {
         }
 
         video.srcObject = stream;
-
         video.setAttribute("playsinline", "true");
         video.setAttribute("webkit-playsinline", "true");
 
         video.play().catch((err) => {
-          console.log(
-            "Play interrupted, but this is expected during stream switching"
-          );
+          console.log("Play interrupted, but this is expected during stream switching");
         });
       })
       .catch((err) => {
@@ -74,11 +64,13 @@ function App() {
   }, []);
 
   const TakePhoto = () => {
-    const width = 414;
+    const width = 1080;
     const height = width / (16 / 9);
 
     let video = videoRef.current;
     let photo = photoReferencial.current;
+
+    if (!video || !photo) return;
 
     photo.width = width;
     photo.height = height;
@@ -91,70 +83,76 @@ function App() {
   };
 
   const TakeMultiplePhotosWidth = async () => {
+    setIsTakingPhotos(true);
     const video = videoRef.current;
     const photo = photoReferencial.current;
 
     if (!video || !photo) {
       console.error("Video or photo reference not found");
+      setIsTakingPhotos(false);
       return;
     }
 
-    const singleWidth = 414;
+    const singleWidth = 1080;
     const singleHeight = singleWidth / (16 / 9);
-
-    // Create a larger canvas for the combined image
-    const combinedWidth = singleWidth * 3; // 3 images side by side
+    const combinedWidth = singleWidth * 3;
     const combinedHeight = singleHeight;
 
     photo.width = combinedWidth;
     photo.height = combinedHeight;
 
     const context = photo.getContext("2d");
-    if (!context) return;
+    if (!context) {
+      setIsTakingPhotos(false);
+      return;
+    }
 
-    // Clear the canvas first
-    context.clearRect(20, 0, combinedWidth, combinedHeight);
-
-    // Set a background color (optional)
     context.fillStyle = "#ffffff";
-    context.fillRect(10, 5, combinedWidth, combinedHeight);
+    context.fillRect(0, 0, combinedWidth, combinedHeight);
 
-    // Take 3 photos with a small delay between them
     for (let i = 0; i < 3; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // 500ms delay
+      // Add countdown for each photo
+      for (let count = 3; count > 0; count--) {
+        setCountdown(count);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      setCountdown(0);
 
-      // Draw each photo at its position
       const xPosition = i * singleWidth;
       context.drawImage(video, xPosition, 0, singleWidth, singleHeight);
 
-      // Optional: Add border between images
       if (i < 2) {
         context.strokeStyle = "#c69999ff";
         context.lineWidth = 10;
-        context.lineHeight = 10;
         context.beginPath();
         context.moveTo(xPosition + singleWidth, 0);
         context.lineTo(xPosition + singleWidth, combinedHeight);
         context.stroke();
       }
+
+      // Wait between photos
+      if (i < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
 
     setHasPhotoShotted(true);
+    setIsTakingPhotos(false);
   };
 
   const TakeMultiplePhotos2 = async () => {
+    setIsTakingPhotos(true);
     const video = videoRef.current;
     const photo = photoReferencial.current;
 
     if (!video || !photo) {
       console.error("Video or photo reference not found");
+      setIsTakingPhotos(false);
       return;
     }
 
-    const singleWidth = 414;
+    const singleWidth = 1080;
     const singleHeight = singleWidth / (16 / 9);
-
-    // Create a larger canvas for the combined image
     const combinedWidth = singleWidth;
     const combinedHeight = singleHeight * 3;
 
@@ -162,32 +160,24 @@ function App() {
     photo.height = combinedHeight;
 
     const context = photo.getContext("2d");
-    if (!context) return;
+    if (!context) {
+      setIsTakingPhotos(false);
+      return;
+    }
 
-    // Clear the canvas first
-    context.clearRect(0, 0, combinedWidth, combinedHeight);
-
-    // Set a background color
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, combinedWidth, combinedHeight);
 
-    // Take 3 photos with countdown timer
     for (let i = 0; i < 3; i++) {
-      // Countdown from 5 to 1 for each shot
-      for (let countdown = 5; countdown > 0; countdown--) {
-        console.log(`Shot ${i + 1} in: ${countdown}`);
+      for (let countdown = 3; countdown > 0; countdown--) {
         setCountdown(countdown);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
-      console.log(`Taking shot ${i + 1}!`);
-
       setCountdown(0);
-      
-      // Calculate position for each frame
-      const yPosition = i * singleHeight; // Fixed: should be singleHeight, not singleWidth
+      const yPosition = i * singleHeight;
 
-      // Draw frame border first
+      // Draw frame border
       context.strokeStyle = "#000000";
       context.lineWidth = 4;
       context.strokeRect(0, yPosition, singleWidth, singleHeight);
@@ -213,7 +203,6 @@ function App() {
       context.font = "bold 20px Arial";
       context.textAlign = "left";
 
-      // Text with outline effect
       context.strokeText(`Shot ${i + 1}`, 10, yPosition + 30);
       context.fillText(`Shot ${i + 1}`, 10, yPosition + 30);
 
@@ -224,7 +213,7 @@ function App() {
       context.strokeText(timestamp, 10, yPosition + singleHeight - 10);
       context.fillText(timestamp, 10, yPosition + singleHeight - 10);
 
-      // Add separator line between images (except after last one)
+      // Add separator line
       if (i < 2) {
         context.strokeStyle = "#cccccc";
         context.lineWidth = 1;
@@ -232,6 +221,11 @@ function App() {
         context.moveTo(0, yPosition + singleHeight);
         context.lineTo(combinedWidth, yPosition + singleHeight);
         context.stroke();
+      }
+
+      // Wait between photos
+      if (i < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
 
@@ -251,8 +245,6 @@ function App() {
     setHasPhotoShotted(false);
   };
 
-  const [photoMode, setPhotoMode] = useState("single");
-
   const handleTakePhoto = () => {
     switch (photoMode) {
       case "multiple":
@@ -262,29 +254,28 @@ function App() {
         TakeMultiplePhotos2();
         break;
       default:
-        TakePhoto(); // Original single photo
+        TakePhoto();
     }
   };
 
   const SaveImage = () => {
-    saveAs(
-      photoReferencial.current.toDataURL("image/png"),
-      "PhotoRaccaImage.png"
-    );
+    if (photoReferencial.current) {
+      saveAs(
+        photoReferencial.current.toDataURL("image/png"),
+        "PhotoRaccaImage.png"
+      );
+    }
   };
 
-
-const CloseWindow = () => {
-  const { remote } = window.require ? window.require('electron') : {};
-  if (remote) {
-    const window = remote.getCurrentWindow();
-    window.close();
-  } else {
-    // Fallback for browser
-    window.close();
-  }
-};
-
+  const CloseWindow = () => {
+    // Safe Electron close handling
+    if (window.electronAPI) {
+      window.electronAPI.closeWindow();
+    } else {
+      // Fallback for browser
+      window.close();
+    }
+  };
 
   return (
     <div className="App">
@@ -295,22 +286,15 @@ const CloseWindow = () => {
           backgroundImage: `
             linear-gradient(to right, #f0f0f0 1px, transparent 1px),
             linear-gradient(to bottom, #f0f0f0 1px, transparent 1px),
-            radial-gradient(circle 600px at 0% 200px, #d5c5ff, transparent),     /* Left */
-            radial-gradient(circle 600px at 100% 200px, #d5c5ff, transparent),  /* Right */
-            radial-gradient(circle 600px at 50% 0px, #d5c5ff, transparent),     /* Top */
-            radial-gradient(circle 600px at 50% 0px, #d5c5ff, transparent),     /* Top */
-            radial-gradient(circle 600px at 50% 0px, #d5c5ff, transparent),     /* Top */
-            radial-gradient(circle 600px at 50% 0px, #d5c5ff, transparent),     /* Top */
-            radial-gradient(circle 600px at 50% 100%, #d5c5ff, transparent)     /* Bottom */
+            radial-gradient(circle 600px at 0% 200px, #d5c5ff, transparent),
+            radial-gradient(circle 600px at 100% 200px, #d5c5ff, transparent),
+            radial-gradient(circle 600px at 50% 0px, #d5c5ff, transparent),
+            radial-gradient(circle 600px at 50% 100%, #d5c5ff, transparent)
           `,
           backgroundSize: `
             96px 64px,    
             96px 64px,    
             100% 100%,    
-            100% 100%,
-            100% 100%,
-            100% 100%,
-            100% 100%,
             100% 100%,
             100% 100%,
             100% 100%
@@ -334,20 +318,27 @@ const CloseWindow = () => {
                 onChange={(e) => {
                   setPhotoMode(e.target.value);
                 }}
+                disabled={isTakingPhotos}
               >
                 <option value="single">Single Photo</option>
                 <option value="multiple">Multiple Photos</option>
                 <option value="multiple2">Multiple Photos Stripe</option>
               </select>
 
-              <button className="TakeShot" onClick={handleTakePhoto} disabled={isTakingPhotos}>
-                { isTakingPhotos ? `Taking Photo... ${countdown > 0 ? countdown : ''}` :
-                  photoMode === "single"
-                  ? "Take a Photo"
-                  : photoMode === "multiple"
-                  ? "Take 3 Photos"
-                  : "Take 3 Photos(Stripped Way)"}
+              <button 
+                className="TakeShot" 
+                onClick={handleTakePhoto} 
+                disabled={isTakingPhotos}
+              >
+                {isTakingPhotos 
+                  ? `Taking Photo... ${countdown > 0 ? countdown : ''}` 
+                  : photoMode === "single"
+                    ? "Take a Photo"
+                    : photoMode === "multiple"
+                    ? "Take 3 Photos"
+                    : "Take 3 Photos(Stripped Way)"}
               </button>
+              
               {isTakingPhotos && countdown > 0 && (
                 <div className="countdown-display">
                   Taking photo in: <span className="countdown-number">{countdown}</span>
@@ -355,18 +346,18 @@ const CloseWindow = () => {
               )}
             </div>
           </div>
-          <div
-            className={"Resultas" + (hasPhotoShotted ? "hasPhotoShotted" : "")}
-          >
+          <div className={`Resultas ${hasPhotoShotted ? "hasPhotoShotted" : ""}`}>
             <canvas ref={photoReferencial}></canvas>
-            <div className="Buttons2">
-              <button className="CloseButton" onClick={ClosePhoto}>
-                Close
-              </button>
-              <button className="SnapButton" onClick={SaveImage}>
-                Save
-              </button>
-            </div>
+            {hasPhotoShotted && (
+              <div className="Buttons2">
+                <button className="CloseButton" onClick={ClosePhoto}>
+                  Close
+                </button>
+                <button className="SnapButton" onClick={SaveImage}>
+                  Save
+                </button>
+              </div>
+            )}
           </div>
           <div className="footermain">
             <div className="footermain2">
@@ -377,9 +368,7 @@ const CloseWindow = () => {
                   GitHub
                 </a>
               </div>
-              <div>
-                0.1.0-Alpha
-              </div>
+              <div>0.2.0-Alpha</div>
             </div>
           </div>
         </div>

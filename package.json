@@ -1,7 +1,7 @@
 {
   "name": "Photoracca-App",
-  "version": "0.1.0-Alpha",
-  "description": "React + Electron app",
+  "version": "0.2.0-Alpha",
+  "description": "Photobooth Software Created for Online and Offline Usage, Currently available for Desktops, Created by RMPlaysMCYT, React + Electron app",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,
@@ -50,10 +50,12 @@
       "category": "public.app-category.productivity"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public/favicon.ico"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "public/favicon.png"
     }
   },
   "browserslist": {

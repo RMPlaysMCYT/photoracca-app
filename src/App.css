@@ -102,11 +102,8 @@
 .VideoFrame {
   width: 60%;
   max-width: 800px;
+  height: auto;
   margin: 20px auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   padding: 20px;
@@ -217,17 +214,30 @@ button {
   z-index: 1000;
 }
 
+.ResultashasPhotoShotted {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  width: 100vh;
+  height: 1080vh;
+  background: rgba(0, 0, 0, 0.5);
+  left: 0;
+}
+
 .Resultas.hasPhotoShotted {
+  /* background: #28ca42; */
   left: 0;
 }
 
 /* Canvas */
 canvas {
+  scale: 50%;
   position: absolute;
-  left: 160px;
+  top: 100px; 
+  left: 380px;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  background: white;
+  background: rgb(192, 69, 69);
 }
 
 /* Footer */
@@ -270,6 +280,8 @@ canvas {
 
 /* Countdown Styles */
 .countdown-display {
+  position: sticky;
+  z-index: 10;
   margin-top: 15px;
   padding: 12px;
   background: rgba(255, 255, 255, 0.95);
@@ -389,9 +401,8 @@ body {
 .close { background: #ff5f57; }
 
 .Buttons2{
-  max-width: 1200px;
-  width: 90%;
-  margin: auto;
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
 }
