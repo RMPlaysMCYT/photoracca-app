@@ -44,6 +44,7 @@
     "files": [
       "build/**/*",
       "public/electron.js",
+      "public/favicon.ico",
       "node_modules/**/*"
     ],
     "mac": {
