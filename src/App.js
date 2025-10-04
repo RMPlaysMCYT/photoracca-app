@@ -10,7 +10,9 @@ function App() {
   const [countdown, setCountdown] = useState(0);
   const [isTakingPhotos, setIsTakingPhotos] = useState(false);
   const [hasPhotoShotted, setHasPhotoShotted] = useState(false);
-  const [photoMode, setPhotoMode] = useState("single");
+  const [photoMode, setPhotoMode] = useState("single");  
+  const [stripeColors, setStripeColors] = useState(['#ffffff', '#ffffff', '#ffffff']); // Default white backgrounds
+  const [borderSize, setBorderSize] = useState(50);
 
   const getVideoCameraAPI = () => {
     if (!videoRef.current) return;
@@ -138,7 +140,12 @@ function App() {
 
     setHasPhotoShotted(true);
     setIsTakingPhotos(false);
+
+    // applyFinalCanvasWithBorder();
   };
+
+
+
 
   const TakeMultiplePhotos2 = async () => {
     setIsTakingPhotos(true);
@@ -230,6 +237,9 @@ function App() {
     setCountdown(0);
   };
 
+
+
+
   const ClosePhoto = () => {
     let photo = photoReferencial.current;
     if (!photo) return;
@@ -240,6 +250,8 @@ function App() {
     contextos.clearRect(0, 0, photo.width, photo.height);
     setHasPhotoShotted(false);
   };
+
+
 
   const handleTakePhoto = () => {
     switch (photoMode) {
@@ -254,6 +266,8 @@ function App() {
     }
   };
 
+
+
   const SaveImage = () => {
     if (photoReferencial.current) {
       saveAs(
@@ -263,6 +277,9 @@ function App() {
     }
   };
 
+
+
+
   const CloseWindow = () => {
     if (window.electronAPI) {
       window.electronAPI.closeWindow();
@@ -270,6 +287,47 @@ function App() {
       window.close();
     }
   };
+
+
+
+  // const applyFinalCanvasWithBorder = () => {
+  //   const sourceCanvas = photoReferencial.current;
+  //   const finalCanvas = finalCanvasRef.current;
+    
+  //   if (!sourceCanvas || !finalCanvas) return;
+
+  //   const singleWidth = 1080;
+  //   const singleHeight = singleWidth / (16 / 9);
+  //   const combinedWidth = singleWidth * 3;
+  //   const combinedHeight = singleHeight;
+
+  //   // Set final canvas size including border
+  //   finalCanvas.width = combinedWidth + (borderSize * 2);
+  //   finalCanvas.height = combinedHeight + (borderSize * 2);
+
+  //   const ctx = finalCanvas.getContext('2d');
+    
+  //   // Fill entire canvas with border color (or you can make this customizable too)
+  //   ctx.fillStyle = '#000000'; // Black border
+  //   ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+  //   // Apply individual stripe backgrounds
+  //   for (let i = 0; i < 3; i++) {
+  //     const xPosition = i * singleWidth;
+      
+  //     // Fill stripe area with selected background color
+  //     ctx.fillStyle = stripeColors[i];
+  //     ctx.fillRect(borderSize + xPosition, borderSize, singleWidth, singleHeight);
+      
+  //     // Draw the photo content for this stripe
+  //     ctx.drawImage(
+  //       sourceCanvas,
+  //       xPosition, 0, singleWidth, singleHeight, // Source
+  //       borderSize + xPosition, borderSize, singleWidth, singleHeight // Destination
+  //     );
+  //   }
+  // };
+
 
   return (
     <div className="App">
