@@ -6,11 +6,15 @@ import PhotoraccaLogo from "./logo";
 function App() {
   const videoRef = useRef(null);
   const photoReferencial = useRef(null);
+  const finalCanvasRef = useRef(null); // Added missing ref
 
   const [countdown, setCountdown] = useState(0);
   const [isTakingPhotos, setIsTakingPhotos] = useState(false);
   const [hasPhotoShotted, setHasPhotoShotted] = useState(false);
-  const [photoMode, setPhotoMode] = useState("single");
+  const [photoMode, setPhotoMode] = useState("single");  
+  const [stripeColors, setStripeColors] = useState(['#ffffff', '#ffffff', '#ffffff']);
+  const [borderSize, setBorderSize] = useState(50);
+  const [showCustomization, setShowCustomization] = useState(false); // Added missing state
 
   const getVideoCameraAPI = () => {
     if (!videoRef.current) return;
@@ -63,16 +67,6 @@ function App() {
     };
   }, []);
 
-  const clearCanvas = () => {
-    let photo = photoReferencial.current;
-    if (!photo) return;
-
-    let contextos = photo.getContext("2d");
-    if (!contextos) return;
-
-    contextos.clearRect(0, 0, photo.width, photo.height);
-  };
-
   const TakePhoto = () => {
     const width = 1080;
     const height = width / (16 / 9);
@@ -82,9 +76,6 @@ function App() {
 
     if (!video || !photo) return;
 
-    // Clear canvas first
-    clearCanvas();
-    
     photo.width = width;
     photo.height = height;
 
@@ -93,10 +84,12 @@ function App() {
 
     contextos.drawImage(video, 0, 0, width, height);
     setHasPhotoShotted(true);
+    setShowCustomization(false);
   };
 
   const TakeMultiplePhotosWidth = async () => {
     setIsTakingPhotos(true);
+    setShowCustomization(false);
     const video = videoRef.current;
     const photo = photoReferencial.current;
 
@@ -111,9 +104,6 @@ function App() {
     const combinedWidth = singleWidth * 3;
     const combinedHeight = singleHeight;
 
-    // Clear canvas first
-    clearCanvas();
-    
     photo.width = combinedWidth;
     photo.height = combinedHeight;
 
@@ -123,7 +113,6 @@ function App() {
       return;
     }
 
-    // Fill with white background first
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, combinedWidth, combinedHeight);
 
@@ -135,11 +124,8 @@ function App() {
       setCountdown(0);
 
       const xPosition = i * singleWidth;
-      
-      // Draw the current photo
       context.drawImage(video, xPosition, 0, singleWidth, singleHeight);
 
-      // Add separator lines between photos (except after the last one)
       if (i < 2) {
         context.strokeStyle = "#c69999ff";
         context.lineWidth = 10;
@@ -149,7 +135,6 @@ function App() {
         context.stroke();
       }
 
-      // Wait between photos (except after the last one)
       if (i < 2) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -157,10 +142,12 @@ function App() {
 
     setHasPhotoShotted(true);
     setIsTakingPhotos(false);
+    setShowCustomization(true);
   };
 
   const TakeMultiplePhotos2 = async () => {
     setIsTakingPhotos(true);
+    setShowCustomization(false);
     const video = videoRef.current;
     const photo = photoReferencial.current;
 
@@ -175,9 +162,6 @@ function App() {
     const combinedWidth = singleWidth;
     const combinedHeight = singleHeight * 3;
 
-    // Clear canvas first
-    clearCanvas();
-    
     photo.width = combinedWidth;
     photo.height = combinedHeight;
 
@@ -187,7 +171,6 @@ function App() {
       return;
     }
 
-    // Fill with white background first
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, combinedWidth, combinedHeight);
 
@@ -200,7 +183,6 @@ function App() {
       setCountdown(0);
       const yPosition = i * singleHeight;
 
-      // Draw frame
       context.strokeStyle = "#000000";
       context.lineWidth = 4;
       context.strokeRect(0, yPosition, singleWidth, singleHeight);
@@ -209,7 +191,6 @@ function App() {
       context.lineWidth = 2;
       context.strokeRect(4, yPosition + 4, singleWidth - 8, singleHeight - 8);
 
-      // Draw photo
       context.drawImage(
         video,
         4,
@@ -218,7 +199,6 @@ function App() {
         singleHeight - 8
       );
 
-      // Add text labels
       context.fillStyle = "#ffffff";
       context.strokeStyle = "#000000";
       context.lineWidth = 2;
@@ -234,7 +214,6 @@ function App() {
       context.strokeText(timestamp, 10, yPosition + singleHeight - 10);
       context.fillText(timestamp, 10, yPosition + singleHeight - 10);
 
-      // Add separator lines between frames (except after the last one)
       if (i < 2) {
         context.strokeStyle = "#cccccc";
         context.lineWidth = 1;
@@ -252,13 +231,22 @@ function App() {
     setHasPhotoShotted(true);
     setIsTakingPhotos(false);
     setCountdown(0);
+    setShowCustomization(false);
   };
 
   const ClosePhoto = () => {
-    clearCanvas();
+    let photo = photoReferencial.current;
+    if (!photo) return;
+
+    let contextos = photo.getContext("2d");
+    if (!contextos) return;
+
+    contextos.clearRect(0, 0, photo.width, photo.height);
     setHasPhotoShotted(false);
+    setShowCustomization(false);
   };
 
+  // ADDED MISSING FUNCTION
   const handleTakePhoto = () => {
     switch (photoMode) {
       case "multiple":
@@ -344,10 +332,6 @@ function App() {
                 value={photoMode}
                 onChange={(e) => {
                   setPhotoMode(e.target.value);
-                  // Clear any existing photo when mode changes
-                  if (hasPhotoShotted) {
-                    ClosePhoto();
-                  }
                 }}
                 disabled={isTakingPhotos}
               >
@@ -377,10 +361,14 @@ function App() {
               )}
             </div>
           </div>
-
           <div className={`Resultas ${hasPhotoShotted ? "hasPhotoShotted" : ""}`}>
             <div className="canvas-container">
-              <canvas className={getCanvasClassName()} ref={photoReferencial}></canvas>
+              {/* Fixed: Only show finalCanvasRef when showCustomization is true and photoMode is multiple */}
+              {showCustomization && photoMode === "multiple" ? (
+                <canvas className={getCanvasClassName()} ref={finalCanvasRef}></canvas>
+              ) : (
+                <canvas className={getCanvasClassName()} ref={photoReferencial}></canvas>
+              )}
             </div>
             {hasPhotoShotted && (
               <div className="Buttons2">
@@ -393,7 +381,6 @@ function App() {
               </div>
             )}
           </div>
-          
           <div className="footermain">
             <div className="footermain2">
               <div className="footer-text">
