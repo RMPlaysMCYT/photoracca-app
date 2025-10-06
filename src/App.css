@@ -102,3 +102,87 @@
   display: flex;
   gap: 20px;
 }
+
+
+.cameraControlButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.controlBtn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #d5c5ff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.controlBtn:hover {
+  background: #c5b0ff;
+}
+
+.controlBtn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.camera-off-placeholder {
+  width: 100%;
+  max-width: 500px;
+  height: 300px;
+  background: #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.capturedPhotoPreview {
+  text-align: center;
+  padding: 20px;
+  margin: 20px;
+  border: 2px dashed #d5c5ff;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.VideoFrame {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.cameraButtons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.modeSelectorBtn, .takePhotoBtn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.takePhotoBtn {
+  background: #ff6b6b;
+  color: white;
+}
+
+.takePhotoBtn:hover:not(:disabled) {
+  background: #ff5252;
+}
+
+.takePhotoBtn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}

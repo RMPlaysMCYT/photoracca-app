@@ -17,13 +17,17 @@ function createWindow() {
 
   // const urlToLoad = isDev ? 'build' : `file://${path.join(__dirname, 'index.html')}`;
   // mainWindow.loadURL(urlToLoad);
-  newWindow.removeMenu();
+  mainWindow.removeMenu();
   mainWindow.loadFile(path.join(__dirname, '..', 'build', 'index.html')); // Adjust 'build' path as needed
 
   // if (isDev) {
   //   mainWindow.webContents.openDevTools(false);
   // }
 }
+
+app.on("browser-window-created", (e, win) => {
+    win.removeMenu();
+});
 
 app.whenReady().then(createWindow);
 

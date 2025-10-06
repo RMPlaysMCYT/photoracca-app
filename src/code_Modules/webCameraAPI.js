@@ -1,50 +1,56 @@
 // webCameraAPI.js
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
+import Webcam from "react-webcam";
 
 export const useWebCamera = () => {
-  const photoReferencial = useRef(null);
-  const videoRef = useRef(null);
-  
-  const [mediaStreamed, setMediaStreamed] = useState(false);
-  const [error, setError] = useState(null);
+  const webcamRef = useRef(null);
+  const [facingMode, setFacingMode] = useState("user");
+  const [mirrored, setMirrored] = useState(false);
+  const [isCameraOn, setIsCameraOn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const startWebCamera = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "user"
-        },
-      });
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      
-      setMediaStreamed(true);
-    } catch (err) {
-      console.error("Camera error:", err);
-      setError(err.message || "Failed to access camera");
-      setMediaStreamed(false);
-    } finally {
-      setIsLoading(false);
+  const switchCamera = useCallback(() => {
+    setFacingMode(prevMode => prevMode === "user" ? "environment" : "user");
+    // Turn off mirroring when switching to back camera
+    if (facingMode === "user") {
+      setMirrored(false);
     }
-  };
+  }, [facingMode]);
 
-  // Auto-start camera when hook is used
-  useEffect(() => {
-    startWebCamera();
+  const toggleCamera = useCallback(() => {
+    setIsCameraOn(prev => !prev);
   }, []);
 
+  const toggleMirror = useCallback(() => {
+    setMirrored(prev => !prev);
+  }, []);
+
+  const capturePhoto = useCallback(() => {
+    if (webcamRef.current && isCameraOn) {
+      const imageSrc = webcamRef.current.getScreenshot();
+      return imageSrc;
+    }
+    return null;
+  }, [isCameraOn]);
+
+  const videoConstraints = {
+    facingMode: facingMode,
+    width: { ideal: 1920 },
+    height: { ideal: 1080 }
+  };
+
   return {
-    videoRef,
-    photoReferencial,
-    mediaStreamed,
-    error,
+    webcamRef,
+    facingMode,
+    mirrored,
+    isCameraOn,
     isLoading,
-    startWebCamera
+    error,
+    switchCamera,
+    toggleCamera,
+    toggleMirror,
+    capturePhoto,
+    videoConstraints
   };
 };
