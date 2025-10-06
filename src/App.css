@@ -6,6 +6,7 @@
   text-decoration: none;
   -webkit-user-select: none;
   -webkit-app-region: no-drag;
+  color: black
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
@@ -39,4 +40,65 @@
   cursor: pointer;
   width: 60px;
   height: 60px;
+}
+
+.VideoFrame{
+  display: flex;
+  justify-content: center;
+}
+
+.videoStreamed{
+   width: 100%;
+   max-Width: 500px;
+}
+
+.cameraButtons{
+  padding: 20px 0 0 0 ;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modeSelectorBtn{
+  background-color: #764ba2;
+  font-size: 30px;
+  border:  0px;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.takePhotoBtn{
+  cursor: pointer;
+  background-color: #667eea;
+  font-size: 30px;
+  border: 0px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.footerMain{
+  font-size: 24px;
+  position: relative;
+  bottom: -10px;
+  max-width: 1600px;
+  width: 90%;
+  margin: 0 auto;
+  color: rgb(0, 0, 0);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerDesign{
+  background-color: #ab8787;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+}
+
+.footerLinks{
+  display: flex;
+  gap: 20px;
 }
