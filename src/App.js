@@ -1,6 +1,4 @@
 //Tech modules
-import React, { useRef, useEffect, useState } from "react";
-import { saveAs } from "file-saver";
 import { closeWindow } from "./code_Modules/closeApp";
 
 //Modules-Image-CSS
