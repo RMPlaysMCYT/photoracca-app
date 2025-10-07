@@ -1,5 +1,7 @@
 //Tech modules
 import { useState, useRef, useEffect } from "react";
+
+//Local Modules
 import { closeWindow } from "./code_Modules/closeApp";
 import { useWebCamera } from "./code_Modules/webCameraAPI"; // Changed import
 
@@ -46,36 +48,37 @@ function App() {
               <img className="logo" src={PhotoraccaLogo}/>
               <img className="close-btn" src={CloseButton} onClick={closeWindow}/>
             </div>
-              <div className="VideoFrame">
-                <video
-                className="videoStreamed"
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  style={{}}
-                />
-                <canvas ref={photoReferencial} style={{ display: 'none' }} />
-              </div>
-              <div className="cameraButtons">
-                <select
-                className="modeSelectorBtn"
-                  // value={photoMode}
-                  // onChange={(e) => {
-                  //   setPhotoMode(e.target.value);
-                  // }}
-                  // disabled={isTakingPhotos}
-                >
-                  <option value="single">Single Photo</option>
-                  <option value="multiple">Multiple Photos</option>
-                  <option value="multiple2">Multiple Photos Stripe</option>
-                </select>
-                <button className="takePhotoBtn">Take a Photo</button>
-              </div>
+            <div className="VideoFrame">
+              <video
+              className="videoStreamed"
+                ref={videoRef}
+                autoPlay
+                playsInline
+                style={{}}
+              />
+              <canvas ref={photoReferencial} style={{ display: 'none' }} />
+            </div>
+            <div className="cameraButtons">
+              <select
+              className="modeSelectorBtn"
+                // value={photoMode}
+                // onChange={(e) => {
+                //   setPhotoMode(e.target.value);
+                // }}
+                // disabled={isTakingPhotos}
+              >
+                <option value="single">Single Photo</option>
+                <option value="multiple">Multiple Photos</option>
+                <option value="multiple2">Multiple Photos Stripe</option>
+              </select>
+              <button className="takePhotoBtn">Take a Photo</button>
+            </div>
           </main>
         <footer className="footerDesign">
           <div className="footerMain">
             <div>© 2025 Ronnel Mitra, Apache License 2.0</div>
             <div className="footerLinks">
+              <a href="#Sponsor">Sponsor Us</a>
               <a href="https://github.com/RMPlaysMCYT/photoracca-app" target="_blank" rel="noopener noreferrer">GitHub</a>
               <a href="https://github.com/RMPlaysMCYT/photoracca-app/releases" target="_blank" rel="noopener noreferrer">0.3.0 - Alpha</a>
             </div>
