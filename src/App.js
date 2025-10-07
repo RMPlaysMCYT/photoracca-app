@@ -3,12 +3,24 @@ import { useState, useRef, useEffect } from "react";
 import { closeWindow } from "./code_Modules/closeApp";
 import { useWebCamera } from "./code_Modules/webCameraAPI"; // Changed import
 
+import {Switch, Route} from "react-router-dom";
+
+import HomePage from './components/Home';
+import Sponsor from './components/Sponsor';
+
+//Pages
+// import { SponsorPage } from "./SponsorPage";
+
 //Modules-Image-CSS
 import "./App.css";
 import PhotoraccaLogo from "./assets/pictures/Photoraccalogo.png";
 import CloseButton from "./assets/images/closeImage.png";
 
 function App() {
+
+
+   const [currentPage, setCurrentPage] = useState('home');
+
   const {
     videoRef,
     photoReferencial,
@@ -41,46 +53,29 @@ function App() {
         }
       >
         <body>
-          <main>
-            <div className="Header">
-              <img className="logo" src={PhotoraccaLogo}/>
-              <img className="close-btn" src={CloseButton} onClick={closeWindow}/>
-            </div>
-              <div className="VideoFrame">
-                <video
-                className="videoStreamed"
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  style={{}}
-                />
-                <canvas ref={photoReferencial} style={{ display: 'none' }} />
+        <Switch>
+            <Route path="/contact">
+              <Contact />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+          <footer className="footerDesign">
+            <div className="footerMain">
+              <div>© 2025 Ronnel Mitra, Apache License 2.0</div>
+              <div className="footerLinks">
+                <a 
+                  onClick={
+                    () => setCurrentPage('SponsorPage')
+                  }
+                  className={currentPage === 'SponsorPage' ? 'active' : ''} 
+                >Sponsor Us</a>
+                <a href="https://github.com/RMPlaysMCYT/photoracca-app" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://github.com/RMPlaysMCYT/photoracca-app/releases" target="_blank" rel="noopener noreferrer">0.3.0 - Alpha</a>
               </div>
-              <div className="cameraButtons">
-                <select
-                className="modeSelectorBtn"
-                  // value={photoMode}
-                  // onChange={(e) => {
-                  //   setPhotoMode(e.target.value);
-                  // }}
-                  // disabled={isTakingPhotos}
-                >
-                  <option value="single">Single Photo</option>
-                  <option value="multiple">Multiple Photos</option>
-                  <option value="multiple2">Multiple Photos Stripe</option>
-                </select>
-                <button className="takePhotoBtn">Take a Photo</button>
-              </div>
-          </main>
-        <footer className="footerDesign">
-          <div className="footerMain">
-            <div>© 2025 Ronnel Mitra, Apache License 2.0</div>
-            <div className="footerLinks">
-              <a href="https://github.com/RMPlaysMCYT/photoracca-app" target="_blank" rel="noopener noreferrer">GitHub</a>
-              <a href="https://github.com/RMPlaysMCYT/photoracca-app/releases" target="_blank" rel="noopener noreferrer">0.3.0 - Alpha</a>
             </div>
-          </div>
-        </footer>
+          </footer>
         </body>
       </div>
     </div>
