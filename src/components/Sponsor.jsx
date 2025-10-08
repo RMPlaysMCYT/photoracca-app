@@ -10,6 +10,8 @@ const SponsorPage = ({ onBack }) => {
         <div>
           You can support us on:
           <br />
+          <a>PayPal</a>
+          <img src="" alt="" />
           <img></img>
           <img></img>
         </div>

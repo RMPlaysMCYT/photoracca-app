@@ -23,7 +23,6 @@ export function useWebCamera() {
 
     startCamera();
 
-    // 🧹 Cleanup: stop camera when component unmounts
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
