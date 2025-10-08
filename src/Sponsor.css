@@ -27,3 +27,7 @@ p{
   align-items: center;
   justify-content: center;
 }
+
+.library-list a {
+  cursor: pointer;
+}

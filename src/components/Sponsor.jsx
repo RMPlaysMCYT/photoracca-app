@@ -7,10 +7,12 @@ const SponsorPage = ({ onBack }) => {
       <h1>Sponsor Us</h1>
       <p>Support our project development!</p>
       <div className="library-list">
-        <h1>Libraries</h1>
-        <a>Save to File</a>
-        <br></br>
-        <a>ReactJS Camera</a>
+        <div>
+          You can support us on:
+          <br />
+          <img></img>
+          <img></img>
+        </div>
       </div>
       <button onClick={onBack} className="back-button">
         Back to Home

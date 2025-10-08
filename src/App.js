@@ -3,6 +3,7 @@ import { closeWindow } from "./code_Modules/closeApp";
 // import { useWebCamera } from "./code_Modules/webCameraAPI";
 import Home from './components/Home';
 import SponsorPage from './components/Sponsor';
+import About from './components/About';
 
 import "./App.css";
 import PhotoraccaLogo from "./assets/pictures/Photoraccalogo.png";
@@ -44,10 +45,12 @@ function App() {
             <img className="close-btn" src={CloseButton} onClick={closeWindow}/>
           </div>
           <div className="content">
-            {currentPage === "home" ? (
-              <Home />
-            ) : (
+            {currentPage === "home" && <Home />}
+            {currentPage === "sponsor" && (
               <SponsorPage onBack={() => handlePageChange("home")} />
+            )}
+            {currentPage === "about" && (
+              <About onBack={() => handlePageChange("home")} />
             )}
           </div>
           <div className="footerDesign">
@@ -58,6 +61,12 @@ function App() {
                   onClick={() => handlePageChange('sponsor')}
                   className={currentPage === 'sponsor' ? 'active' : ''}
                 >Sponsor Us</a>
+                <a
+                  onClick={() => handlePageChange('about')}
+                  className={currentPage === 'about' ? 'active' : ''}
+                >
+                  About
+                </a>
                 <a href="https://github.com/RMPlaysMCYT/photoracca-app" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a href="https://github.com/RMPlaysMCYT/photoracca-app/releases" target="_blank" rel="noopener noreferrer">0.3.0 - Alpha</a>
               </div>
