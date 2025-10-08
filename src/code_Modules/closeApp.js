@@ -1,4 +1,4 @@
-export const closeWindow = () => {
+export function closeWindow(){
     if (window.electronAPI) {
       window.electronAPI.closeWindow();
     } else {
