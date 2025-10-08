@@ -1,15 +1,18 @@
 import React from "react";
+import "../Sponsor.css";
 
-const SponsorPage = () => {
-  const handleBackToHome = () => {
-    // Add your logic to navigate back to the Home page
-  };
-
+const SponsorPage = ({ onBack }) => {
   return (
     <div className="sponsor-page">
       <h1>Sponsor Us</h1>
       <p>Support our project development!</p>
-      <button onClick={handleBackToHome} className="back-button">
+      <div className="library-list">
+        <h1>Libraries</h1>
+        <a>Save to File</a>
+        <br></br>
+        <a>ReactJS Camera</a>
+      </div>
+      <button onClick={onBack} className="back-button">
         Back to Home
       </button>
     </div>

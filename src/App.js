@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { closeWindow } from "./code_Modules/closeApp";
-
+// import { useWebCamera } from "./code_Modules/webCameraAPI";
 import Home from './components/Home';
 import SponsorPage from './components/Sponsor';
 
@@ -44,7 +44,11 @@ function App() {
             <img className="close-btn" src={CloseButton} onClick={closeWindow}/>
           </div>
           <div className="content">
-            {currentPage === 'home' ? <Home /> : <SponsorPage />}
+            {currentPage === "home" ? (
+              <Home />
+            ) : (
+              <SponsorPage onBack={() => handlePageChange("home")} />
+            )}
           </div>
           <div className="footerDesign">
             <div className="footerMain">
