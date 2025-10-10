@@ -45,15 +45,16 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
               <style>
                 body { 
                   margin: 0; 
-                  padding: 20px; 
+                  padding: 10px; 
                   display: flex; 
+                  flex-direction: column;
                   justify-content: center; 
                   align-items: center; 
-                  min-height: 100vh;
+                  min-height: 80vh;
                   background: #f0f0f0;
                 }
                 img { 
-                  max-width: 100%; 
+                  max-width: 60%; 
                   height: auto; 
                   border: 2px solid #333;
                   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
@@ -62,6 +63,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
             </head>
             <body>
               <img src="${imageData}" alt="Captured Photo" />
+              <button>Save Image</button>
             </body>
           </html>
         `);
