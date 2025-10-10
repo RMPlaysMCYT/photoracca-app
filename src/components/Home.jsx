@@ -1,15 +1,26 @@
 import React, { useRef, useState } from "react";
 import { useWebCamera } from "../code_Modules/webCameraAPI";
 import SinglePhoto from "./singlePhoto"; // Make sure to import SinglePhoto
+import MultiplePhotoStripe from "./multiplePhotoStripe";
+import MultiplePhotoStripeHeight from "./multiplePhotoStripeHeight";
 
 const Home = () => {
   const { videoRef, photoReferencial } = useWebCamera();
   const [currentMode, setCurrentMode] = useState("single");
   const singlePhotoRef = useRef();
+  const stripeRef = useRef();
 
   const handleTakePhoto = () => {
     if (currentMode === "single" && singlePhotoRef.current) {
       singlePhotoRef.current.takePhoto();
+    }
+    if (currentMode === "multiple" && stripeRef.current) {
+      // start the 3s countdown strip capture (up to configured photos)
+      stripeRef.current.startStrip();
+    }
+    if (currentMode === "multiple2" && stripeRef.current) {
+      // start the 3s countdown strip capture (up to configured photos)
+      stripeRef.current.startStrip();
     }
     // Add other modes here as needed
   };
@@ -37,6 +48,24 @@ const Home = () => {
             ref={singlePhotoRef}
             videoRef={videoRef}
             canvasRef={photoReferencial}
+          />
+        )}
+        {currentMode === "multiple" && (
+          <MultiplePhotoStripe
+            ref={stripeRef}
+            videoRef={videoRef}
+            canvasRef={photoReferencial}
+            countdown={3}
+            maxPhotos={4}
+          />
+        )}
+        {currentMode === "multiple2" && (
+          <MultiplePhotoStripeHeight
+            ref={stripeRef}
+            videoRef={videoRef}
+            canvasRef={photoReferencial}
+            countdown={3}
+            maxPhotos={4}
           />
         )}
         {/* Add other mode components here */}
