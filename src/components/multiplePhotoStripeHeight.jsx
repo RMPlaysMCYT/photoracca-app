@@ -1,13 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from "react";
 import PhotoRacca_Frame0 from "../frames/PhotoRacca_frame0.png";
 
-/**
- * MultiplePhotoStripe
- * - countdown (default 3s) before each shot
- * - captures up to maxPhotos (default 4)
- * - supports basic frames (none, polaroid, rounded, vintage) and PNG overlay (frame0)
- * - exposes ref methods: startStrip(), stopStrip(), getPhotos(), saveStrip()
- */
 const MultiplePhotoStripeHeight = forwardRef(({ videoRef, canvasRef, countdown = 3, maxPhotos = 4 }, ref) => {
   const [running, setRunning] = useState(false);
   const [currentCount, setCurrentCount] = useState(0);

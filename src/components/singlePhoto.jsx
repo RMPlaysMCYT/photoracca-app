@@ -150,13 +150,17 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
   // Small inline styles for preview and frames
   const previewStyles = {
     container: {
-      position: "absolute",
+      background: "rgba(0, 0, 0, 0.5)",
+      top: "-55vh",
+      position: "relative",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      alignSelf: "center",
       gap: "12px",
       marginTop: "12px",
       padding: "12px",
+      bottom: "20vh",
     },
     imgWrapper: {
       position: "relative",

@@ -7,16 +7,17 @@ export function useWebCamera() {
   const [cameraReady, setCameraReady] = useState(false);
 
   useEffect(() => {
-    let stream;
+    const streamRef = { current: null };
 
     async function startCamera() {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
+        const stream = await navigator.mediaDevices.getUserMedia({ 
           video: { 
             width: { ideal: 1280 },
             height: { ideal: 720 }
           } 
         });
+        streamRef.current = stream;
         
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -39,8 +40,8 @@ export function useWebCamera() {
     startCamera();
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
         setCameraReady(false);
         console.log("Camera stopped");
       }
