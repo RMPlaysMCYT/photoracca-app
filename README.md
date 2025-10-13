@@ -17,7 +17,7 @@
 
 | Platforms | Web | App |
 |---|---|---|
-| Windows | ✅ | 🏗️ |
+| Windows | ✅ | ✅ |
 | MacOS   | ✅ | 🏗️ |
 | Linux   | ✅ | 🏗️ |
 | Android | 🏗️ | 🏗️ |
