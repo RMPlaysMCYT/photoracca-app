@@ -1,11 +1,42 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useWebCamera } from "../code_Modules/webCameraAPI";
 import SinglePhoto from "./singlePhoto"; // Make sure to import SinglePhoto
 import MultiplePhotoStripe from "./multiplePhotoStripe";
 import MultiplePhotoStripeHeight from "./multiplePhotoStripeHeight";
 
 const Home = () => {
-  const { videoRef, photoReferencial } = useWebCamera();
+  const { videoRef, photoReferencial, deviceId, setDeviceId } = useWebCamera();
+  const [devices, setDevices] = useState([]);
+  const [CameraSource, setCameraSource] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    async function listDevices() {
+      try {
+        const all = await navigator.mediaDevices.enumerateDevices();
+        const cams = all.filter((d) => d.kind === "videoinput");
+        if (!mounted) return;
+        setDevices(cams);
+        if (cams.length > 0) {
+          const preferred = deviceId || cams[0].deviceId;
+          setCameraSource(preferred);
+          // ensure hook uses this device
+          if (!deviceId) setDeviceId(cams[0].deviceId);
+        }
+      } catch (e) {
+        console.warn("Failed to list devices", e);
+      }
+    }
+    listDevices();
+    // re-list on devicechange
+    navigator.mediaDevices.addEventListener("devicechange", listDevices);
+    return () => {
+      mounted = false;
+      try {
+        navigator.mediaDevices.removeEventListener("devicechange", listDevices);
+      } catch (e) {}
+    };
+  }, [deviceId, setDeviceId]);
   const [currentMode, setCurrentMode] = useState("single");
   const singlePhotoRef = useRef();
   const stripeRef = useRef();
@@ -79,6 +110,21 @@ const Home = () => {
             <option value="single">Single Photo</option>
             <option value="multiple">Multiple Photos</option>
             <option value="multiple2">Multiple Photos Stripe</option>
+          </select>
+          <select
+            className="modeSelectorBtn"
+            value={CameraSource}
+            onChange={(e) => {
+              const id = e.target.value;
+              setCameraSource(id);
+              setDeviceId(id);
+            }}
+          >
+            {devices.map((d) => (
+              <option key={d.deviceId} value={d.deviceId}>
+                {d.label || `Camera ${d.deviceId}`}
+              </option>
+            ))}
           </select>
           <button className="takePhotoBtn" onClick={handleTakePhoto}>
             Take a Photo

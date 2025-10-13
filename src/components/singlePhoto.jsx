@@ -169,7 +169,9 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
       boxSizing: "border-box",
     },
     img: {
-      display: "block",
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
       width: "100%",
       height: "auto",
       boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
