@@ -47,7 +47,7 @@
       "build/**/*",
       "public/electron.js",
       "public/favicon.ico",
-      "node_modules/**/*"
+      "!node_modules/**/*"
     ],
     "mac": {
       "category": "public.app-category.productivity"
@@ -59,6 +59,14 @@
     "linux": {
       "target": "AppImage",
       "icon": "public/favicon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "license": "build/license.txt",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Photoracca"
     }
   },
   "browserslist": {

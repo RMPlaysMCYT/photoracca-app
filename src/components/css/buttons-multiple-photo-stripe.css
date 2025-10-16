@@ -1,0 +1,77 @@
+.buttons-single{
+    padding: 20px 30px 20px 30px ;
+    background-color: #31e837;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+    border-radius: 5px;
+}
+
+.buttons-single:nth-child(2){
+    padding: 20px 30px 20px 30px ;
+    background-color: #de321c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+}
+
+.buttons-single:hover{
+    padding: 20px 30px 20px 30px ;
+    background-color: #0d5710;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transform: translateY(-10px);
+}
+
+.buttons-single:nth-child(2):hover{
+    padding: 20px 30px 20px 30px ;
+    background-color: #320600;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+}
+
+
+.buttons-single:nth-child(2):active{
+    padding: 20px 30px 20px 30px ;
+    background-color: #320600;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+    transform: translateY(10px);
+
+}
+.buttons-single:active{
+    padding: 20px 30px 20px 30px ;
+    background-color: #006d19;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+    transform: translateY(10px);
+}
+
+.select-design{
+    padding: 20px 5px;
+    border-radius: 5px;
+    background-color: #31e837;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+}
+
+.select-design::content{
+    padding: 20px 10px;
+    border-radius: 5px;
+    background-color: #31e837;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+}

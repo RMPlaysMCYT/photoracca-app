@@ -2,8 +2,11 @@ import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import PhotoRacca_frame0 from "./PhotoRacca_frame0.png";
 
+import './css/buttons-single.css';
+
 const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
   const [capturedData, setCapturedData] = useState(null);
+  const [previewData, setPreviewData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [frame, setFrame] = useState("none");
   const [framedData, setFramedData] = useState(null);
@@ -151,7 +154,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
   const previewStyles = {
     container: {
       background: "rgba(0, 0, 0, 0.5)",
-      top: "-55vh",
+      top: "-60vh",
       position: "relative",
       display: "flex",
       flexDirection: "column",
@@ -159,8 +162,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
       alignSelf: "center",
       gap: "12px",
       marginTop: "12px",
-      padding: "12px",
-      bottom: "20vh",
+      padding: "200px",
+      bottom: "10vh",
     },
     imgWrapper: {
       position: "relative",
@@ -170,10 +173,11 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
     },
     img: {
       position: "relative",
-      display: "flex",
-      alignItems: "center",
+      display: "block",
       width: "100%",
+      maxWidth: "960px", // scale preview down in UI but keep aspect
       height: "auto",
+      objectFit: "contain",
       boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
     },
     // frames implemented via additional wrapper styles
@@ -218,21 +222,49 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
       }
 
       const ctx = canvas.getContext("2d");
-      
+
       // Set canvas dimensions to match video
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
       // Draw current video frame to canvas
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
+
       // Get image data
       const imageData = canvas.toDataURL("image/png");
 
       console.log("Captured Image:", imageData);
 
-      // Instead of opening a new window, keep the data and show an inline preview
+      // Keep full-resolution capture for saving
       setCapturedData(imageData);
+
+      // Generate a 1920x1080 preview (letterboxed/pillarboxed to preserve aspect)
+      try {
+        const PREVIEW_W = 1920;
+        const PREVIEW_H = 1080;
+        const pCanvas = document.createElement("canvas");
+        pCanvas.width = PREVIEW_W;
+        pCanvas.height = PREVIEW_H;
+        const pCtx = pCanvas.getContext("2d");
+        // letterbox background
+        pCtx.fillStyle = "#000";
+        pCtx.fillRect(0, 0, PREVIEW_W, PREVIEW_H);
+
+        const vw = video.videoWidth;
+        const vh = video.videoHeight;
+        const scale = Math.min(PREVIEW_W / vw, PREVIEW_H / vh);
+        const drawW = Math.round(vw * scale);
+        const drawH = Math.round(vh * scale);
+        const dx = Math.round((PREVIEW_W - drawW) / 2);
+        const dy = Math.round((PREVIEW_H - drawH) / 2);
+        pCtx.drawImage(video, 0, 0, vw, vh, dx, dy, drawW, drawH);
+        const preview = pCanvas.toDataURL("image/png");
+        setPreviewData(preview);
+      } catch (err) {
+        console.warn("Preview generation failed", err);
+        setPreviewData(imageData);
+      }
+
       setShowPreview(true);
 
       return imageData;
@@ -289,7 +321,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
         <div style={previewStyles.container} className="capturePreview">
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <label style={{ fontSize: 14 }}>Frame:</label>
-            <select value={frame} onChange={(e) => setFrame(e.target.value)}>
+            <select className="select-design" value={frame} onChange={(e) => setFrame(e.target.value)}>
               <option value="none">None</option>
               <option value="polaroid">Polaroid</option>
               <option value="rounded">Rounded</option>
@@ -306,7 +338,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
           >
             <img
               alt="Captured"
-              src={capturedData}
+              src={previewData || capturedData}
               style={{ ...previewStyles.img, ...(frame === "rounded" ? { borderRadius: "14px" } : {}) }}
             />
             {frame === "frame0" && (
@@ -328,11 +360,12 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
           </div>
 
           <div style={{ display: "flex", gap: "8px" }}>
-            <button
+            <button className="buttons-single"
               onClick={async () => {
                 try {
+                  const date1 = new Date().toISOString();
                   const framed = await generateFramedDataUrl(capturedData, frame);
-                  downloadDataUrl(framed, `photoracca_${frame}.png`);
+                  downloadDataUrl(framed, `photoracca_${frame}_${date1}.png`);
                 } catch (e) {
                   // fallback to raw
                   console.warn('Failed to generate framed image, saving raw image', e);
@@ -343,6 +376,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
               Save Image
             </button>
             <button
+              className="buttons-single"
               onClick={() => {
                 setShowPreview(false);
                 // keep capturedData if user wants to re-open preview; clear if you prefer
