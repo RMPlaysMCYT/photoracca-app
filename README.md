@@ -1,7 +1,7 @@
 <img style="" src="photoraccalogo.png">
 
 # Photoracca App
-### Version: 0.1.0-Alpha
+### Version: 0.3.0-Alpha
 ### Features:
 - Add up to 4 shots
 - Locally stored on your device, once close you can't retrived it back
