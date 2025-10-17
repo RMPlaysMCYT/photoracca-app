@@ -1,50 +1,98 @@
-// webCameraAPI.js
-import { useState, useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 
-export const useWebCamera = () => {
-  const photoReferencial = useRef(null);
+export function useWebCamera() {
   const videoRef = useRef(null);
-  
-  const [mediaStreamed, setMediaStreamed] = useState(false);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const photoReferencial = useRef(null);
+  const [mediaStreamed, setMediaStreamed] = useState(null);
+  const [cameraReady, setCameraReady] = useState(false);
+  const [deviceId, setDeviceId] = useState(null);
+  const [facingMode, setFacingMode] = useState(null);
 
-  const startWebCamera = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "user"
-        },
-      });
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      
-      setMediaStreamed(true);
-    } catch (err) {
-      console.error("Camera error:", err);
-      setError(err.message || "Failed to access camera");
-      setMediaStreamed(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Auto-start camera when hook is used
   useEffect(() => {
-    startWebCamera();
+    const streamRef = { current: null };
+
+    async function startCamera() {
+      try {
+        const constraints = { video: { width: { ideal: 2560 }, height: { ideal: 1440 } } };
+        if (deviceId) {
+          // prefer exact device if provided
+          constraints.video.deviceId = { exact: deviceId };
+        } else if (facingMode) {
+          // prefer facing mode if provided (user/environment)
+          constraints.video.facingMode = { ideal: facingMode };
+        }
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = stream;
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          
+          // Wait for video to load and be ready
+          videoRef.current.onloadedmetadata = () => {
+            setCameraReady(true);
+            console.log("Camera ready, video dimensions:", 
+              videoRef.current.videoWidth, "x", videoRef.current.videoHeight);
+          };
+        }
+        
+        setMediaStreamed(stream);
+      } catch (err) {
+        console.error("Error accessing camera:", err);
+        setCameraReady(false);
+      }
+    }
+
+    startCamera();
+
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        setCameraReady(false);
+        console.log("Camera stopped");
+      }
+    };
   }, []);
 
-  return {
-    videoRef,
-    photoReferencial,
+  // restart camera when deviceId changes
+  useEffect(() => {
+    // trigger start/stop by re-running the effect in outer scope
+    // We keep an explicit call: stop previous tracks and restart
+    let mounted = true;
+    (async () => {
+      if (!mounted) return;
+      try {
+        if (mediaStreamed) {
+          mediaStreamed.getTracks().forEach((t) => t.stop());
+        }
+      } catch (e) {
+        // ignore
+      }
+      try {
+  const constraints = { video: { width: { ideal: 2560 }, height: { ideal: 1440 } } };
+  if (deviceId) constraints.video.deviceId = { exact: deviceId };
+  else if (facingMode) constraints.video.facingMode = { ideal: facingMode };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        if (mounted) {
+          setMediaStreamed(stream);
+          if (videoRef.current) videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.warn('Failed to restart camera with deviceId', deviceId, err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [deviceId]);
+
+  return { 
+    videoRef, 
+    photoReferencial, 
     mediaStreamed,
-    error,
-    isLoading,
-    startWebCamera
+    cameraReady,
+    deviceId,
+    setDeviceId,
+    facingMode,
+    setFacingMode
   };
-};
+}
