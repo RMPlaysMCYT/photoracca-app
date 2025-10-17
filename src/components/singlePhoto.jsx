@@ -3,8 +3,11 @@ import { Helmet } from "react-helmet";
 import PhotoRacca_frame0 from "./PhotoRacca_frame0.png";
 
 import './css/buttons-single.css';
+import './css/singlePhoto.css';
 
-const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
+const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, ref) => {
+  const [running, setRunning] = useState(false);
+  const [currentCount, setCurrentCount] = useState(0);
   const [capturedData, setCapturedData] = useState(null);
   const [previewData, setPreviewData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -205,70 +208,63 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
   };
   useImperativeHandle(ref, () => ({
     takePhoto: () => {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
+      if (running) return; // Prevent multiple presses
+      setRunning(true);
+      let count = 3; // 3-second countdown
+      setCurrentCount(count);
 
-      console.log("Taking photo...", { video, canvas });
+      const timer = setInterval(() => {
+        count--;
+        setCurrentCount(count);
+        if (count <= 0) {
+          clearInterval(timer);
 
-      if (!video || !canvas) {
-        console.warn("Video or Canvas not available");
-        return null;
-      }
+          const video = videoRef.current;
+          const canvas = canvasRef.current;
 
-      // Wait for video to be ready
-      if (video.videoWidth === 0 || video.videoHeight === 0) {
-        console.warn("Video not ready yet");
-        return null;
-      }
+          if (!video || !canvas || video.videoWidth === 0) {
+            console.warn("Video not ready yet");
+            setRunning(false);
+            return;
+          }
 
-      const ctx = canvas.getContext("2d");
+          const ctx = canvas.getContext("2d");
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Set canvas dimensions to match video
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+          const imageData = canvas.toDataURL("image/png");
+          setCapturedData(imageData);
 
-      // Draw current video frame to canvas
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          // Generate preview
+          try {
+            const PREVIEW_W = 1920;
+            const PREVIEW_H = 1080;
+            const pCanvas = document.createElement("canvas");
+            pCanvas.width = PREVIEW_W;
+            pCanvas.height = PREVIEW_H;
+            const pCtx = pCanvas.getContext("2d");
+            pCtx.fillStyle = "#000";
+            pCtx.fillRect(0, 0, PREVIEW_W, PREVIEW_H);
+            const vw = video.videoWidth;
+            const vh = video.videoHeight;
+            const scale = Math.min(PREVIEW_W / vw, PREVIEW_H / vh);
+            const drawW = Math.round(vw * scale);
+            const drawH = Math.round(vh * scale);
+            const dx = Math.round((PREVIEW_W - drawW) / 2);
+            const dy = Math.round((PREVIEW_H - drawH) / 2);
+            pCtx.drawImage(video, 0, 0, vw, vh, dx, dy, drawW, drawH);
+            setPreviewData(pCanvas.toDataURL("image/png"));
+          } catch (err) {
+            setPreviewData(imageData);
+          }
 
-      // Get image data
-      const imageData = canvas.toDataURL("image/png");
-
-      console.log("Captured Image:", imageData);
-
-      // Keep full-resolution capture for saving
-      setCapturedData(imageData);
-
-      // Generate a 1920x1080 preview (letterboxed/pillarboxed to preserve aspect)
-      try {
-        const PREVIEW_W = 1920;
-        const PREVIEW_H = 1080;
-        const pCanvas = document.createElement("canvas");
-        pCanvas.width = PREVIEW_W;
-        pCanvas.height = PREVIEW_H;
-        const pCtx = pCanvas.getContext("2d");
-        // letterbox background
-        pCtx.fillStyle = "#000";
-        pCtx.fillRect(0, 0, PREVIEW_W, PREVIEW_H);
-
-        const vw = video.videoWidth;
-        const vh = video.videoHeight;
-        const scale = Math.min(PREVIEW_W / vw, PREVIEW_H / vh);
-        const drawW = Math.round(vw * scale);
-        const drawH = Math.round(vh * scale);
-        const dx = Math.round((PREVIEW_W - drawW) / 2);
-        const dy = Math.round((PREVIEW_H - drawH) / 2);
-        pCtx.drawImage(video, 0, 0, vw, vh, dx, dy, drawW, drawH);
-        const preview = pCanvas.toDataURL("image/png");
-        setPreviewData(preview);
-      } catch (err) {
-        console.warn("Preview generation failed", err);
-        setPreviewData(imageData);
-      }
-
-      setShowPreview(true);
-
-      return imageData;
+          setShowPreview(true);
+          setRunning(false);
+        }
+      }, 1000);
     },
+    
     // returns a Promise resolving to a dataURL that includes the currently selected frame
     getFramedData: async () => {
       // Prefer cached framedData if available
@@ -315,7 +311,11 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
         <meta property="og:image" content={PhotoRacca_frame0} />
       </Helmet>
       <p style={{ textAlign: "center" }}>Ready to capture a single photo.</p>
-
+      {running && currentCount > 0 && (
+        <div className="counterMobi">
+          {currentCount}
+        </div>
+      )}
       {/* Inline preview shown after takePhoto() is called */}
       {showPreview && capturedData && (
         <div style={previewStyles.container} className="capturePreview">
@@ -339,7 +339,12 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
             <img
               alt="Captured"
               src={previewData || capturedData}
-              style={{ ...previewStyles.img, ...(frame === "rounded" ? { borderRadius: "14px" } : {}) }}
+              style={{
+                ...previewStyles.img,
+                ...(frame === "rounded" ? { borderRadius: "14px" } : {}),
+                transform: mirrorPreview ? "scaleX(-1)" : "none",
+                transformOrigin: "center",
+              }}
             />
             {frame === "frame0" && (
               <img
@@ -354,6 +359,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef }, ref) => {
                   objectFit: "cover",
                   pointerEvents: "none",
                   zIndex: 2,
+                  transform: mirrorPreview ? "scaleX(-1)" : "none",
+                  transformOrigin: "center",
                 }}
               />
             )}

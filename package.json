@@ -1,8 +1,9 @@
 {
-  "name": "Photoracca-App",
+  "name": "photoracca-app",
   "version": "0.3.0-Alpha",
   "description": "Photobooth Software Created for Online and Offline Usage, Currently available for Desktops, Created by RMPlaysMCYT, React + Electron app",
   "main": "public/electron.js",
+  "author": "RMPlaysMCYT",
   "homepage": "./",
   "private": true,
   "dependencies": {
@@ -45,16 +46,26 @@
     },
     "files": [
       "build/**/*",
+      "public/installer.nsh",
+      "public/installer.nsi",
+      "public/license.txt",
       "public/electron.js",
       "public/favicon.ico",
+      "public/license.txt",
       "!node_modules/**/*"
     ],
     "mac": {
       "category": "public.app-category.productivity"
     },
     "win": {
-      "target": "nsis",
-      "icon": "public/favicon.ico"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/favicon.ico",
+      "publisherName": "RMPlaysMCYT"
     },
     "linux": {
       "target": "AppImage",
@@ -62,11 +73,21 @@
     },
     "nsis": {
       "oneClick": false,
+      "perMachine": false,
       "allowToChangeInstallationDirectory": true,
-      "license": "build/license.txt",
+      "deleteAppDataOnUninstall": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Photoracca"
+      "shortcutName": "PhotoRacca",
+      "uninstallDisplayName": "PhotoRacca Desktop",
+      "license": "public/LICENSE",  
+      "installerHeader": "public/_Photoracca_Header.bmp",
+      "installerSidebar": "public/_Photoracca_Wizard.bmp",
+      "installerIcon": "public/InkscapeIcon_insta.ico",
+      "uninstallerIcon": "public/InkscapeIcon_uninst.ico",
+      "uninstallerSidebar": "public/_Photoracca_Wizard.bmp",
+      "include": "build/installer.nsh",
+      "script": "build/installer.nsi"
     }
   },
   "browserslist": {

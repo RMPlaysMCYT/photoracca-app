@@ -17,7 +17,7 @@ import "./css/buttons-multiple-photo.css";
  * - exposes ref methods: startStrip(), stopStrip(), getPhotos(), saveStrip()
  */
 const MultiplePhotoStripe = forwardRef(
-  ({ videoRef, canvasRef, countdown = 3, maxPhotos = 4 }, ref) => {
+  ({ videoRef, canvasRef, countdown = 3, maxPhotos = 4, mirrorPreview = false }, ref) => {
     const [running, setRunning] = useState(false);
     const [currentCount, setCurrentCount] = useState(0);
     const [photos, setPhotos] = useState([]); // array of dataURL (raw captures)
@@ -343,7 +343,7 @@ const MultiplePhotoStripe = forwardRef(
 
         <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>
           {running && currentCount > 0 && (
-            <div style={{ fontSize: 48, fontWeight: "bold", color: "#e53935", margin: 12 }}>
+            <div style={{ position: "absolute", top: 300, fontSize: 48, fontWeight: "bold", color: "#e53935", margin: 12 }}>
               {currentCount}
             </div>
           )}

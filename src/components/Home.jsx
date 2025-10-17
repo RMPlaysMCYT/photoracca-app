@@ -5,9 +5,10 @@ import MultiplePhotoStripe from "./multiplePhotoStripe";
 import MultiplePhotoStripeHeight from "./multiplePhotoStripeHeight";
 
 const Home = () => {
-  const { videoRef, photoReferencial, deviceId, setDeviceId } = useWebCamera();
+  const { videoRef, photoReferencial, deviceId, setDeviceId, facingMode, setFacingMode } = useWebCamera();
   const [devices, setDevices] = useState([]);
   const [CameraSource, setCameraSource] = useState("");
+  const [mirrorPreview, setMirrorPreview] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -69,6 +70,7 @@ const Home = () => {
             ref={videoRef}
             autoPlay
             playsInline
+            style={{ transform: mirrorPreview ? 'scaleX(-1)' : 'none' }}
           />
           <canvas ref={photoReferencial} style={{ display: "none" }} />
         </div>
@@ -79,6 +81,7 @@ const Home = () => {
             ref={singlePhotoRef}
             videoRef={videoRef}
             canvasRef={photoReferencial}
+            mirrorPreview={mirrorPreview}
           />
         )}
         {currentMode === "multiple" && (
@@ -88,6 +91,7 @@ const Home = () => {
             canvasRef={photoReferencial}
             countdown={3}
             maxPhotos={4}
+            mirrorPreview={mirrorPreview}
           />
         )}
         {currentMode === "multiple2" && (
@@ -97,6 +101,7 @@ const Home = () => {
             canvasRef={photoReferencial}
             countdown={3}
             maxPhotos={4}
+            mirrorPreview={mirrorPreview}
           />
         )}
         {/* Add other mode components here */}
@@ -117,6 +122,8 @@ const Home = () => {
             onChange={(e) => {
               const id = e.target.value;
               setCameraSource(id);
+              // picking an explicit device should clear facingMode so deviceId is used
+              setFacingMode(null);
               setDeviceId(id);
             }}
           >
@@ -126,6 +133,31 @@ const Home = () => {
               </option>
             ))}
           </select>
+
+          <select
+            className="modeSelectorBtn"
+            value={facingMode || "auto"}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "auto") {
+                // let the device selection remain as-is
+                setFacingMode(null);
+                return;
+              }
+              // choosing facing mode clears a previously pinned deviceId so facingMode is used
+              setDeviceId(null);
+              setFacingMode(val);
+            }}
+          >
+            <option value="auto">Camera: Auto</option>
+            <option value="user">Front (user)</option>
+            <option value="environment">Back (environment)</option>
+          </select>
+
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input type="checkbox" checked={mirrorPreview} onChange={(e) => setMirrorPreview(e.target.checked)} />
+            Mirror Preview
+          </label>
           <button className="takePhotoBtn" onClick={handleTakePhoto}>
             Take a Photo
           </button>

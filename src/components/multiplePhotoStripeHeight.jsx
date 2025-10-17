@@ -11,7 +11,15 @@ import photoracca_strip_Frame0 from "../frames/photoracca_strip_Frame0.png";
 import photoracca_strip_Frame1 from "../frames/photoracca_strip_Frame1.png";
 
 const MultiplePhotoStripeHeight = forwardRef(
-  ({ videoRef, canvasRef, countdown = 3, maxPhotos = 4 }, ref) => {
+  ({
+    videoRef,
+    canvasRef,
+    countdown = 3,
+    maxPhotos = 4,
+    exportWidth = 2560,
+    exportHeight = 5796,
+    mirrorPreview = false,
+  }, ref) => {
     const [running, setRunning] = useState(false);
     const [currentCount, setCurrentCount] = useState(0);
     const [photos, setPhotos] = useState([]); // array of dataURL (raw captures)
@@ -163,12 +171,13 @@ const MultiplePhotoStripeHeight = forwardRef(
     // outerPadding: padding around the photos
     const composeStrip = async (
       framedArray,
-      spacing = 12,
+      spacing = 10,
       background = "#fff",
       targetWidth = 800,
       outerPadding = 24,
       overlaySrc = null,
-      overlayMode = "overlay" // 'overlay' draws on top, 'background' draws behind
+      overlayMode = "overlay", // 'overlay' draws on top, 'background' draws behind
+      targetHeight = null // optional forced output height
     ) => {
       if (!framedArray || framedArray.length === 0) return null;
       // load all images
@@ -185,18 +194,31 @@ const MultiplePhotoStripeHeight = forwardRef(
       );
 
       const contentWidth = Math.max(1, targetWidth - outerPadding * 2);
-      // compute scaled heights for each image
-      const scaledHeights = imgs.map((im) =>
-        Math.round((im.height * contentWidth) / im.width)
-      );
-      const totalHeight =
+      // compute base scaled heights for each image
+      const baseScaledHeights = imgs.map((im) => (im.height * contentWidth) / im.width);
+
+      // decide final scaled heights and canvas height
+      let scaledHeights = baseScaledHeights.map((h) => Math.round(h));
+      let canvasHeight =
         scaledHeights.reduce((s, h) => s + h, 0) +
         spacing * (imgs.length - 1) +
         outerPadding * 2;
 
+      // If a targetHeight is supplied, compute a global scale so photos fit exactly
+      if (targetHeight && Number.isFinite(targetHeight) && targetHeight > 0) {
+        const availablePhotosArea = Math.max(
+          1,
+          targetHeight - outerPadding * 2 - spacing * (imgs.length - 1)
+        );
+        const sumBaseHeights = baseScaledHeights.reduce((s, h) => s + h, 0) || 1;
+        const globalScale = availablePhotosArea / sumBaseHeights;
+        scaledHeights = baseScaledHeights.map((h) => Math.max(1, Math.round(h * globalScale)));
+        canvasHeight = targetHeight;
+      }
+
       const canvas = document.createElement("canvas");
       canvas.width = targetWidth;
-      canvas.height = totalHeight;
+      canvas.height = canvasHeight;
       const ctx = canvas.getContext("2d");
       ctx.fillStyle = background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -354,10 +376,11 @@ const MultiplePhotoStripeHeight = forwardRef(
           toSave,
           12,
           "#fff",
-          800,
+          exportWidth,
           24,
           overlaySrc,
-          "overlay"
+          "overlay",
+          exportHeight
         );
         if (strip) downloadDataUrl(strip, "photoracca_strip.png");
         return strip;
@@ -542,7 +565,14 @@ const MultiplePhotoStripeHeight = forwardRef(
                   const strip = await composeStrip(
                     framedPhotos.length === photos.length
                       ? framedPhotos
-                      : photos
+                      : photos,
+                    12,
+                    "#fff",
+                    exportWidth,
+                    24,
+                    null,
+                    "overlay",
+                    exportHeight
                   );
                   if (strip)
                     downloadDataUrl(strip, `photoracca_strip_${date1}.png`);
@@ -558,32 +588,39 @@ const MultiplePhotoStripeHeight = forwardRef(
           style={{
             position: "absolute",
             marginTop: 12,
+            top: 300,
+            display: "flex",
+            gap: 20
           }}
         >
           {running && currentCount > 0 && (
-            <div style={{ fontSize: 48, fontWeight: "bold", color: "#e53935" }}>
+            <div style={{ fontSize: 70, fontWeight: "bold", color: "#ffffffff", position: "absolute", right: -920 }}>
               {currentCount}
             </div>
           )}
 
-          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+
+          {/* PREVIEW PANE Closed due to overridance */}
+          {/* <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
             {(framedPhotos.length > 0 ? framedPhotos : photos).map((p, idx) => (
               <div key={idx} style={{ width: 120, position: "relative" }}>
                 <img
                   src={p}
-                  alt={`shot-${idx}`}
+                  alt={`photo-shot-${idx}`}
                   style={{ width: "100%", display: "block" }}
                 />
               </div>
             ))}
-          </div>
+          </div> */}
+
+          {/* Preview Stripe */}
           {previewStrip && (
-            <div style={{ marginTop: 12 }}>
+            <div style={{ position: "absolute", marginTop: 12, right: -350, scale: 1.7 }}>
               <label>Strip Preview</label>
               <div style={{ width: 120, border: "1px solid #ddd", padding: 6 }}>
                 <img
                   src={previewStrip}
-                  alt="strip-preview"
+                  alt="photobooth strip preview"
                   style={{ width: "100%", display: "block" }}
                 />
               </div>

@@ -6,6 +6,7 @@ export function useWebCamera() {
   const [mediaStreamed, setMediaStreamed] = useState(null);
   const [cameraReady, setCameraReady] = useState(false);
   const [deviceId, setDeviceId] = useState(null);
+  const [facingMode, setFacingMode] = useState(null);
 
   useEffect(() => {
     const streamRef = { current: null };
@@ -16,6 +17,9 @@ export function useWebCamera() {
         if (deviceId) {
           // prefer exact device if provided
           constraints.video.deviceId = { exact: deviceId };
+        } else if (facingMode) {
+          // prefer facing mode if provided (user/environment)
+          constraints.video.facingMode = { ideal: facingMode };
         }
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         streamRef.current = stream;
@@ -64,8 +68,9 @@ export function useWebCamera() {
         // ignore
       }
       try {
-        const constraints = { video: { width: { ideal: 2560 }, height: { ideal: 1440 } } };
-        if (deviceId) constraints.video.deviceId = { exact: deviceId };
+  const constraints = { video: { width: { ideal: 2560 }, height: { ideal: 1440 } } };
+  if (deviceId) constraints.video.deviceId = { exact: deviceId };
+  else if (facingMode) constraints.video.facingMode = { ideal: facingMode };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         if (mounted) {
           setMediaStreamed(stream);
@@ -86,6 +91,8 @@ export function useWebCamera() {
     mediaStreamed,
     cameraReady,
     deviceId,
-    setDeviceId
+    setDeviceId,
+    facingMode,
+    setFacingMode
   };
 }
