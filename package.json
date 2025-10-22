@@ -85,9 +85,7 @@
       "installerSidebar": "public/_Photoracca_Wizard.bmp",
       "installerIcon": "public/InkscapeIcon_insta.ico",
       "uninstallerIcon": "public/InkscapeIcon_uninst.ico",
-      "uninstallerSidebar": "public/_Photoracca_Wizard.bmp",
-      "include": "build/installer.nsh",
-      "script": "build/installer.nsi"
+      "uninstallerSidebar": "public/_Photoracca_Wizard.bmp"
     }
   },
   "browserslist": {

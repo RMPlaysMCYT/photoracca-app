@@ -8,7 +8,7 @@ const Home = () => {
   const { videoRef, photoReferencial, deviceId, setDeviceId, facingMode, setFacingMode } = useWebCamera();
   const [devices, setDevices] = useState([]);
   const [CameraSource, setCameraSource] = useState("");
-  const [mirrorPreview, setMirrorPreview] = useState(false);
+  const [mirrorPreview, setMirrorPreview] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -122,7 +122,7 @@ const Home = () => {
             onChange={(e) => {
               const id = e.target.value;
               setCameraSource(id);
-              // picking an explicit device should clear facingMode so deviceId is used
+              
               setFacingMode(null);
               setDeviceId(id);
             }}
@@ -140,11 +140,11 @@ const Home = () => {
             onChange={(e) => {
               const val = e.target.value;
               if (val === "auto") {
-                // let the device selection remain as-is
+                
                 setFacingMode(null);
                 return;
               }
-              // choosing facing mode clears a previously pinned deviceId so facingMode is used
+              
               setDeviceId(null);
               setFacingMode(val);
             }}
