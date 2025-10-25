@@ -2,7 +2,6 @@
     padding: 20px 30px 20px 30px ;
     background-color: #31e837;
     color: white;
-    border: none;
     cursor: pointer;
     transition: ease-in 0.1s;
     border-radius: 5px;
@@ -12,7 +11,6 @@
     padding: 20px 30px 20px 30px ;
     background-color: #de321c;
     color: white;
-    border: none;
     cursor: pointer;
     transition: ease-in 0.1s;
 }
@@ -21,7 +19,6 @@
     padding: 20px 30px 20px 30px ;
     background-color: #0d5710;
     color: white;
-    border: none;
     cursor: pointer;
     transform: translateY(-10px);
 }
@@ -30,7 +27,6 @@
     padding: 20px 30px 20px 30px ;
     background-color: #320600;
     color: white;
-    border: none;
     cursor: pointer;
     transition: ease-in 0.1s;
 }
@@ -40,7 +36,6 @@
     padding: 20px 30px 20px 30px ;
     background-color: #320600;
     color: white;
-    border: none;
     cursor: pointer;
     transition: ease-in 0.1s;
     transform: translateY(10px);
@@ -50,7 +45,6 @@
     padding: 20px 30px 20px 30px ;
     background-color: #006d19;
     color: white;
-    border: none;
     cursor: pointer;
     transition: ease-in 0.1s;
     transform: translateY(10px);
@@ -61,7 +55,6 @@
     border-radius: 5px;
     background-color: #31e837;
     color: white;
-    border: none;
     cursor: pointer;
     transition: ease-in 0.1s;
 }

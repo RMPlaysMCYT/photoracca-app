@@ -7,8 +7,30 @@ import React, {
 } from "react";
 import { Helmet } from "react-helmet";
 import PhotoRacca_Frame0 from "../frames/PhotoRacca_frame0.png";
+
 import photoracca_strip_Frame0 from "../frames/photoracca_strip_Frame0.png";
 import photoracca_strip_Frame1 from "../frames/photoracca_strip_Frame1.png";
+import photoracca_strip_Frame2 from "../frames/photoracca_strip_Frame2.png";
+import photoracca_strip_Frame3 from "../frames/photoracca_strip_Frame3.png";
+import photoracca_strip_Frame4 from "../frames/photoracca_strip_Frame4.png";
+import photoracca_strip_Frame5 from "../frames/photoracca_strip_Frame5.png";
+import photoracca_strip_Frame6 from "../frames/photoracca_strip_Frame6.png";
+import photoracca_strip_Frame7 from "../frames/photoracca_strip_Frame7.png";
+import photoracca_strip_Frame8 from "../frames/photoracca_strip_Frame8.png";
+import photoracca_strip_Frame9 from "../frames/photoracca_strip_Frame9.png";
+import photoracca_strip_Frame10 from "../frames/photoracca_strip_Frame10.png";
+import photoracca_strip_Frame11 from "../frames/photoracca_strip_Frame11.png";
+import photoracca_strip_Frame12 from "../frames/photoracca_strip_Frame12.png";
+
+import photoracca_strip_Frame_Polaroid0 from "../frames/photoracca_strip_Frame_Polaroid0.png";
+import photoracca_strip_Frame_Polaroid1 from "../frames/photoracca_strip_Frame_Polaroid1.png";
+
+import photoracca_strip_FrameOverlay0 from "../overlays/photoracca_strip_overlay0.png"
+import photoracca_strip_FrameOverlay1 from "../overlays/photoracca_strip_overlay1.png"
+
+import shutterSound from "../audio/shutter.mp3";
+
+import "../App.css";
 
 const MultiplePhotoStripeHeight = forwardRef(
   ({
@@ -22,13 +44,16 @@ const MultiplePhotoStripeHeight = forwardRef(
   }, ref) => {
     const [running, setRunning] = useState(false);
     const [currentCount, setCurrentCount] = useState(0);
-    const [photos, setPhotos] = useState([]); // array of dataURL (raw captures)
-    const [framedPhotos, setFramedPhotos] = useState([]); // cached framed dataURLs
+    const [photos, setPhotos] = useState([]);
+    const [framedPhotos, setFramedPhotos] = useState([]);
     const [frame, setFrame] = useState("none");
     const [stripOverlay, setStripOverlay] = useState("none");
+    const [stripOverlay2, setStripOverlay2] = useState("none");
+    // const [stripDecoOverlay, setstripDecoOverlay] = useState("none");
     const [preset, setPreset] = useState("none");
 
-    // keep preset in sync when frame or stripOverlay changes directly
+    const shutterSounda = useRef(new Audio(shutterSound));
+
     useEffect(() => {
       if (frame === "none" && stripOverlay === "none") setPreset("none");
       else if (frame === "polaroid" && stripOverlay === "none")
@@ -46,12 +71,12 @@ const MultiplePhotoStripeHeight = forwardRef(
       else if (frame === "rounded" && stripOverlay === "strip1")
         setPreset("rounded_strip1");
       else setPreset("custom");
-    }, [frame, stripOverlay]);
+    }, [frame, stripOverlay, stripOverlay2]);
     const [previewStrip, setPreviewStrip] = useState(null);
     const countdownRef = useRef(null);
     const abortRef = useRef(false);
 
-    // helper to download
+
     const downloadDataUrl = (dataUrl, filename = "strip.png") => {
       const link = document.createElement("a");
       link.href = dataUrl;
@@ -61,7 +86,7 @@ const MultiplePhotoStripeHeight = forwardRef(
       link.remove();
     };
 
-    // rounded rect helper
+
     const roundRect = (ctx, x, y, w, h, r) => {
       if (w < 2 * r) r = w / 2;
       if (h < 2 * r) r = h / 2;
@@ -74,7 +99,7 @@ const MultiplePhotoStripeHeight = forwardRef(
       ctx.closePath();
     };
 
-    // Compose single framed data URL (supports overlay frame0)
+
     const generateFramedDataUrl = (dataUrl, selectedFrame) => {
       return new Promise((resolve, reject) => {
         if (!dataUrl) return reject(new Error("No image data"));
@@ -163,12 +188,9 @@ const MultiplePhotoStripeHeight = forwardRef(
       });
     };
 
-    // compose vertical strip from framed photos into a fixed target width (photobooth tall strip)
-    // framedArray: array of dataURLs
-    // spacing: space between photos
-    // background: canvas background
-    // targetWidth: final canvas width in px (default 800 for a photobooth strip)
-    // outerPadding: padding around the photos
+
+
+
     const composeStrip = async (
       framedArray,
       spacing = 10,
@@ -176,8 +198,10 @@ const MultiplePhotoStripeHeight = forwardRef(
       targetWidth = 800,
       outerPadding = 24,
       overlaySrc = null,
-      overlayMode = "overlay", // 'overlay' draws on top, 'background' draws behind
-      targetHeight = null // optional forced output height
+      overlaySrc2 = null,
+      overlayMode = "overlay",
+      targetHeight = null
+
     ) => {
       if (!framedArray || framedArray.length === 0) return null;
       // load all images
@@ -194,17 +218,19 @@ const MultiplePhotoStripeHeight = forwardRef(
       );
 
       const contentWidth = Math.max(1, targetWidth - outerPadding * 2);
-      // compute base scaled heights for each image
+
       const baseScaledHeights = imgs.map((im) => (im.height * contentWidth) / im.width);
 
-      // decide final scaled heights and canvas height
+
       let scaledHeights = baseScaledHeights.map((h) => Math.round(h));
       let canvasHeight =
         scaledHeights.reduce((s, h) => s + h, 0) +
         spacing * (imgs.length - 1) +
-        outerPadding * 2;
+        outerPadding * 1.2;
 
-      // If a targetHeight is supplied, compute a global scale so photos fit exactly
+      let finalContentWidth = contentWidth;
+      let finalX = outerPadding;
+
       if (targetHeight && Number.isFinite(targetHeight) && targetHeight > 0) {
         const availablePhotosArea = Math.max(
           1,
@@ -214,6 +240,9 @@ const MultiplePhotoStripeHeight = forwardRef(
         const globalScale = availablePhotosArea / sumBaseHeights;
         scaledHeights = baseScaledHeights.map((h) => Math.max(1, Math.round(h * globalScale)));
         canvasHeight = targetHeight;
+
+        finalContentWidth = Math.max(1, Math.round(contentWidth * globalScale));
+        finalX = (targetWidth - finalContentWidth) / 2;
       }
 
       const canvas = document.createElement("canvas");
@@ -227,39 +256,42 @@ const MultiplePhotoStripeHeight = forwardRef(
       for (let idx = 0; idx < imgs.length; idx++) {
         const im = imgs[idx];
         const h = scaledHeights[idx];
-        const x = outerPadding; // center not needed because we scale to contentWidth
-        ctx.drawImage(im, x, y, contentWidth, h);
+
+        const x = finalX;
+        ctx.drawImage(im, x, y, finalContentWidth, h);
+
         y += h + spacing;
       }
-      // if overlay provided, draw it on top (or as background) scaled to canvas
+
       if (overlaySrc) {
         await new Promise((res) => {
           const o = new Image();
           o.onload = () => {
             try {
               if (overlayMode === "background") {
-                // draw overlay behind: first draw overlay then re-draw photos on top
+
                 ctx.globalCompositeOperation = "source-over";
                 ctx.drawImage(o, 0, 0, canvas.width, canvas.height);
-                // redraw photos on top: we need to redraw the whole canvas
-                // clear and redraw background then photos
+
                 ctx.fillStyle = background;
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 let y2 = outerPadding;
                 for (let idx = 0; idx < imgs.length; idx++) {
                   const im = imgs[idx];
                   const h = scaledHeights[idx];
-                  const x = outerPadding;
-                  ctx.drawImage(im, x, y2, contentWidth, h);
+
+                  // === FIX Part 4: Use final variables in the 2nd loop too ===
+                  const x = finalX; // Use new centered X
+                  ctx.drawImage(im, x, y2, finalContentWidth, h); // Use new scaled width
+                  // === END FIX Part 4 ===
+
                   y2 += h + spacing;
                 }
-                // finally draw overlay on top with multiply? we already drew as background
+
               } else {
-                // overlay on top
                 ctx.drawImage(o, 0, 0, canvas.width, canvas.height);
               }
             } catch (err) {
-              // ignore overlay errors
               console.warn("Overlay draw failed", err);
             }
             res(null);
@@ -269,10 +301,23 @@ const MultiplePhotoStripeHeight = forwardRef(
         });
       }
 
+      if (overlaySrc2) {
+        await new Promise((res) => {
+          const o2 = new Image();
+          o2.onload = () => {
+            ctx.globalCompositeOperation = "source-over";
+            ctx.drawImage(o2, 0, 0, canvas.width, canvas.height);
+            res();
+          };
+          o2.onerror = () => res();
+          o2.src = overlaySrc2;
+        });
+      }
+
       return canvas.toDataURL("image/png");
     };
 
-    // capture a single frame from video element
+
     const captureOnce = () => {
       const video = videoRef?.current;
       const canvas = canvasRef?.current;
@@ -285,7 +330,7 @@ const MultiplePhotoStripeHeight = forwardRef(
       return canvas.toDataURL("image/png");
     };
 
-    // main strip runner
+
     const runStrip = async () => {
       if (running) return;
       abortRef.current = false;
@@ -295,32 +340,33 @@ const MultiplePhotoStripeHeight = forwardRef(
 
       for (let i = 0; i < maxPhotos; i++) {
         if (abortRef.current) break;
-        // countdown
+
         for (let t = countdown; t > 0; t--) {
           setCurrentCount(t);
-          // wait 1 second
-          // eslint-disable-next-line no-await-in-loop
+
           await new Promise((r) => setTimeout(r, 1000));
           if (abortRef.current) break;
         }
         if (abortRef.current) break;
         setCurrentCount(0);
-        // capture
+
+        shutterSounda.current.currentTime = 0;
+        shutterSounda.current.play().catch((e) => console.warn("Sound play failed:", e));
+
         const raw = captureOnce();
         if (!raw) {
-          // camera not ready; stop
+
           console.warn("Failed to capture - video/canvas not ready");
           break;
         }
-        // add raw
+
         setPhotos((p) => [...p, raw]);
-        // generate framed version async and cache
+
         generateFramedDataUrl(raw, frame)
           .then((fd) => setFramedPhotos((fp) => [...fp, fd]))
           .catch(() => setFramedPhotos((fp) => [...fp, raw]));
 
-        // small pause between captures
-        // eslint-disable-next-line no-await-in-loop
+
         await new Promise((r) => setTimeout(r, 500));
       }
 
@@ -337,8 +383,7 @@ const MultiplePhotoStripeHeight = forwardRef(
       },
       getPhotos: async (includeFramed = true) => {
         if (includeFramed) {
-          // wait for any pending framed generation (best effort)
-          // if framedPhotos length < photos length, generate missing ones
+
           const needed = photos.length - framedPhotos.length;
           if (needed > 0) {
             const start = framedPhotos.length;
@@ -366,12 +411,47 @@ const MultiplePhotoStripeHeight = forwardRef(
       saveStrip: async () => {
         const toSave =
           framedPhotos.length === photos.length ? framedPhotos : photos;
+
         const overlaySrc =
           stripOverlay === "strip0"
             ? photoracca_strip_Frame0
             : stripOverlay === "strip1"
             ? photoracca_strip_Frame1
+            : stripOverlay === "strip2"
+            ? photoracca_strip_Frame2
+            : stripOverlay === "strip3"
+            ? photoracca_strip_Frame3
+            : stripOverlay === "strip4"
+            ? photoracca_strip_Frame4
+            : stripOverlay === "strip5"
+            ? photoracca_strip_Frame5
+            : stripOverlay === "strip6"
+            ? photoracca_strip_Frame6
+            : stripOverlay === "strip7"
+            ? photoracca_strip_Frame7
+            : stripOverlay === "strip8"
+            ? photoracca_strip_Frame8
+            : stripOverlay === "strip9"
+            ? photoracca_strip_Frame9
+            : stripOverlay === "strip10"
+            ? photoracca_strip_Frame10
+            : stripOverlay === "strip11"
+            ? photoracca_strip_Frame11
+            : stripOverlay === "strip12"
+            ? photoracca_strip_Frame12
+            : stripOverlay === "strip1Polaroid0"
+            ? photoracca_strip_Frame_Polaroid0
+            : stripOverlay === "strip1Polaroid1"
+            ? photoracca_strip_Frame_Polaroid1
             : null;
+
+        const overlaySrc2 =
+          stripOverlay2 === "stripDeco0"
+            ? photoracca_strip_FrameOverlay0
+            : stripOverlay2 === "stripDeco1"
+            ? photoracca_strip_FrameOverlay1
+            : null;
+
         const strip = await composeStrip(
           toSave,
           12,
@@ -379,22 +459,25 @@ const MultiplePhotoStripeHeight = forwardRef(
           exportWidth,
           24,
           overlaySrc,
+          overlaySrc2,
           "overlay",
           exportHeight
         );
+
         if (strip) downloadDataUrl(strip, "photoracca_strip.png");
         return strip;
       },
     }));
 
-    // small cleanup if component unmounts
+
     useEffect(() => {
       return () => {
+        shutterSounda.current.load();
         abortRef.current = true;
       };
     }, []);
 
-    // generate a small preview of the final strip whenever photos or overlay change
+
     useEffect(() => {
       let mounted = true;
       const toUse = framedPhotos.length > 0 ? framedPhotos : photos;
@@ -407,10 +490,45 @@ const MultiplePhotoStripeHeight = forwardRef(
           ? photoracca_strip_Frame0
           : stripOverlay === "strip1"
           ? photoracca_strip_Frame1
+          : stripOverlay === "strip2"
+          ? photoracca_strip_Frame2
+          : stripOverlay === "strip3"
+          ? photoracca_strip_Frame3
+          : stripOverlay === "strip4"
+          ? photoracca_strip_Frame4
+          : stripOverlay === "strip5"
+          ? photoracca_strip_Frame5
+          : stripOverlay === "strip6"
+          ? photoracca_strip_Frame6
+          : stripOverlay === "strip7"
+          ? photoracca_strip_Frame7
+          : stripOverlay === "strip8"
+          ? photoracca_strip_Frame8
+          : stripOverlay === "strip9"
+          ? photoracca_strip_Frame9
+          : stripOverlay === "strip10"
+          ? photoracca_strip_Frame10
+          : stripOverlay === "strip11"
+          ? photoracca_strip_Frame11
+          : stripOverlay === "strip12"
+          ? photoracca_strip_Frame12
+            
+          : stripOverlay === "strip1Polaroid0"
+          ? photoracca_strip_Frame_Polaroid0
+          : stripOverlay === "strip1Polaroid1"
+          ? photoracca_strip_Frame_Polaroid1
           : null;
+
+      const overlaySrc2 =
+        stripOverlay2 === "stripDeco0"
+          ? photoracca_strip_FrameOverlay0
+          : stripOverlay2 === "stripDeco1"
+          ? photoracca_strip_FrameOverlay1
+          : null;
+
       (async () => {
         try {
-          // smaller preview width for UI
+
           const preview = await composeStrip(
             toUse,
             8,
@@ -418,6 +536,7 @@ const MultiplePhotoStripeHeight = forwardRef(
             240,
             8,
             overlaySrc,
+            overlaySrc2,
             "overlay"
           );
           if (mounted) setPreviewStrip(preview);
@@ -428,7 +547,7 @@ const MultiplePhotoStripeHeight = forwardRef(
       return () => {
         mounted = false;
       };
-    }, [framedPhotos, photos, stripOverlay]);
+    }, [framedPhotos, photos, stripOverlay, stripOverlay2]);
 
     return (
       <div className="multiplePhotoStripe" style={{ padding: 12 }}>
@@ -447,6 +566,8 @@ const MultiplePhotoStripeHeight = forwardRef(
         </Helmet>
         <div
           style={{
+            position: "relative",
+            left: 190,
             display: "flex",
             gap: 8,
             alignItems: "center",
@@ -461,7 +582,7 @@ const MultiplePhotoStripeHeight = forwardRef(
               onChange={(e) => {
                 const v = e.target.value;
                 setPreset(v);
-                // map preset to frame and stripOverlay
+
                 switch (v) {
                   case "none":
                     setFrame("none");
@@ -531,6 +652,31 @@ const MultiplePhotoStripeHeight = forwardRef(
               <option value="none">None</option>
               <option value="strip0">Strip 0</option>
               <option value="strip1">Strip 1</option>
+              <option value="strip2">Strip 2</option>
+              <option value="strip3">Strip 3</option>
+              <option value="strip4">Strip 4</option>
+              <option value="strip5">Strip 5</option>
+              <option value="strip6">Strip 6</option>
+              <option value="strip7">Strip 7</option>
+              <option value="strip8">Strip 8</option>
+              <option value="strip9">Strip 9</option>
+              <option value="strip10">Strip 10</option>
+              <option value="strip11">Strip 11</option>
+              <option value="strip12">Strip 12</option>
+              <option value="strip1Polaroid0">Strip 0 for Polaroid Preset</option>
+              <option value="strip1Polaroid1">Strip 1 for Polaroid Preset</option>
+            </select>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label>Strip Decoration Overlay:</label>
+            <select
+              className="select-design"
+              value={stripOverlay2}
+              onChange={(e) => setStripOverlay2(e.target.value)}
+            >
+              <option value="none">None</option>
+              <option value="stripDeco0">Strip 0</option>
+              <option value="stripDeco1">Strip 1</option>
             </select>
           </div>
 
@@ -560,17 +706,15 @@ const MultiplePhotoStripeHeight = forwardRef(
                   ? ref.current.saveStrip()
                   : null);
                 if (!s) {
-                  // fallback: compose locally
                   const date1 = new Date().toISOString();
                   const strip = await composeStrip(
-                    framedPhotos.length === photos.length
-                      ? framedPhotos
-                      : photos,
+                    toSave,
                     12,
                     "#fff",
                     exportWidth,
                     24,
-                    null,
+                    overlaySrc,
+                    overlaySrc2,
                     "overlay",
                     exportHeight
                   );
@@ -617,7 +761,7 @@ const MultiplePhotoStripeHeight = forwardRef(
           {previewStrip && (
             <div style={{ position: "absolute", marginTop: 12, right: -350, scale: 1.7 }}>
               <label>Strip Preview</label>
-              <div style={{ width: 120, border: "1px solid #ddd", padding: 6 }}>
+              <div style={{ width: 180, border: "1px solid #ddd", padding: 6 }}>
                 <img
                   src={previewStrip}
                   alt="photobooth strip preview"

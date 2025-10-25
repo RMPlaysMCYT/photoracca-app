@@ -1,0 +1,42 @@
+flowchart TD
+    A[Photobooth] --> AA 
+    A[Photobooth] --> AB
+    AA[Single Photo] -->|Photo Taken| B(Preview)
+    AB[Stripe Photo] --> AAA
+
+    AAA[Photos taken up to 4 shots] --> |Photo Taken| B(Preview)
+
+    B --> BA[Preview after photo taken]
+
+    BA --> BD[Mixed]
+    BA --> BB[MultiStripe]
+    BB --> bba[Stripes]
+    BB --> bbb[Decorations]
+
+    BB --> C
+
+    BD --> bba --> bbb --> C
+
+    BA --> BC[Single Photo]
+
+    BC --> C{Let me think}
+    bba --> C{Let me think}
+    bbb --> C{Let me think}
+
+    C -->|One: Save Locally| D[Save Locally]
+
+    D --> DA[Reload] --> A
+    
+    C -->|Two: Save Online| E[Save Online]
+    E --> EA[Google Drive] --> DA[Reload] --> A
+    E --> EB[MediaFire] --> DA[Reload] --> A
+    E --> EC[Mega] --> DA[Reload] --> A
+    E --> ED[Dropbox]--> DA[Reload] --> A
+    E --> EE[Proton Drive]--> DA[Reload] --> A
+    E --> EF[DataNodes]--> DA[Reload] --> A
+    
+    C -->|Three: Save Via Messaging| F[Save Via Messaging Platforms]
+    F --> FA[Messenger] --> DA[Reload] --> A
+    F --> FB[Telegram] --> DA[Reload] --> A
+    F --> FC[Signal] --> DA[Reload] --> A
+    F --> FD[Discord] --> DA[Reload] --> A

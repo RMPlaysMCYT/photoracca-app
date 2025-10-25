@@ -122,7 +122,7 @@ const Home = () => {
             onChange={(e) => {
               const id = e.target.value;
               setCameraSource(id);
-              // picking an explicit device should clear facingMode so deviceId is used
+              
               setFacingMode(null);
               setDeviceId(id);
             }}
@@ -140,11 +140,11 @@ const Home = () => {
             onChange={(e) => {
               const val = e.target.value;
               if (val === "auto") {
-                // let the device selection remain as-is
+                
                 setFacingMode(null);
                 return;
               }
-              // choosing facing mode clears a previously pinned deviceId so facingMode is used
+              
               setDeviceId(null);
               setFacingMode(val);
             }}
@@ -158,7 +158,7 @@ const Home = () => {
             <input type="checkbox" checked={mirrorPreview} onChange={(e) => setMirrorPreview(e.target.checked)} />
             Mirror Preview
           </label>
-          <button className="takePhotoBtn" onClick={handleTakePhoto}>
+          <button className="cameraButtons takePhotoBtn" onClick={handleTakePhoto}>
             Take a Photo
           </button>
         </div>

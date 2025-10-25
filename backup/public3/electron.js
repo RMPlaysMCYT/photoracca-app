@@ -1,0 +1,44 @@
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+// const isDev = require('electron-is-dev');
+
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    autoHideMenuBar: true,
+    frame: false,
+    width: 1920,
+    height: 1080,
+    icon: path.join(__dirname, 'favicon.ico'),
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  // const urlToLoad = isDev ? 'build' : `file://${path.join(__dirname, 'index.html')}`;
+  // mainWindow.loadURL(urlToLoad);
+  mainWindow.removeMenu();
+  mainWindow.loadFile(path.join(__dirname, '..', 'build', 'index.html')); // Adjust 'build' path as needed
+
+  // if (isDev) {
+  //   mainWindow.webContents.openDevTools(false);
+  // }
+}
+
+app.on("browser-window-created", (e, win) => {
+    win.removeMenu();
+});
+
+app.whenReady().then(createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});

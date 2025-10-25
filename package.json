@@ -1,28 +1,96 @@
 {
   "name": "photoracca-app",
-  "version": "0.1.0",
+  "version": "0.3.0-DEV",
+  "description": "Photobooth Software Created for Online and Offline Usage, Currently available for Desktops, Created by RMPlaysMCYT, React + Electron app",
+  "main": "public/electron.js",
+  "author": "RMPlaysMCYT",
+  "homepage": "./",
   "private": true,
   "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.0",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "electron-is-dev": "^2.0.0",
+    "file-saver": "^2.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
+    "electron": "^22.0.0",
+    "electron-builder": "^23.6.0",
+    "react-webcam": "^7.2.0",
+    "tailwindcss": "^4.1.14",
+    "wait-on": "^7.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-build": "npm run build && electron-builder",
+    "build-win": "npm run build && electron-builder --win",
+    "build-mac": "npm run build && electron-builder --mac",
+    "build-linux": "npm run build && electron-builder --linux",
+    "dist": "npm run electron-build",
+    "pack": "npm run build && electron-builder --dir"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "build": {
+    "appId": "com.rmplaysmcyt.github.io.photoraccaapp",
+    "productName": "PhotoRacca App",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "package.json",
+      "package-lock.json",
+      ".env",
+      "build/**/*",
+      "src/**/**/**",
+      "public/installer.nsh",
+      "public/installer.nsi",
+      "public/license.txt",
+      "public/electron.js",
+      "public/favicon.ico",
+      "public/license.txt",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "public/favicon.ico",
+      "publisherName": "RMPlaysMCYT"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/favicon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PhotoRacca",
+      "uninstallDisplayName": "PhotoRacca Desktop",
+      "license": "public/LICENSE",  
+      "installerHeader": "public/_Photoracca_Header.bmp",
+      "installerSidebar": "public/_Photoracca_Wizard.bmp",
+      "installerIcon": "public/InkscapeIcon_insta.ico",
+      "uninstallerIcon": "public/InkscapeIcon_uninst.ico",
+      "uninstallerSidebar": "public/_Photoracca_Wizard.bmp"
+    }
   },
   "browserslist": {
     "production": [
@@ -35,10 +103,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "electron": "^38.2.0",
-    "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1"
   }
 }

@@ -1,9 +1,13 @@
-import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import { forwardRef, useImperativeHandle, useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import PhotoRacca_frame0 from "./PhotoRacca_frame0.png";
 
+import shutterSound from "../audio/shutter.mp3";
+
 import './css/buttons-single.css';
 import './css/singlePhoto.css';
+
+
 
 const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, ref) => {
   const [running, setRunning] = useState(false);
@@ -14,7 +18,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
   const [frame, setFrame] = useState("none");
   const [framedData, setFramedData] = useState(null);
 
-  // Helper to download data URL
+  const shutterSounda = useRef(new Audio(shutterSound));
+
   const downloadDataUrl = (dataUrl, filename = "captured_photo.png") => {
     const link = document.createElement("a");
     link.href = dataUrl;
@@ -24,14 +29,12 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
     link.remove();
   };
 
-  // Compose the captured image with the selected frame into a new dataURL
   const generateFramedDataUrl = (dataUrl, selectedFrame) => {
     return new Promise((resolve, reject) => {
       if (!dataUrl) return reject(new Error("No image data"));
       if (selectedFrame === "none") return resolve(dataUrl);
 
       const img = new Image();
-      // important for data URLs - no crossOrigin needed for same-origin dataURL
       img.onload = () => {
         const iw = img.width;
         const ih = img.height;
@@ -42,8 +45,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
           canvas.height = ih;
           const ctx = canvas.getContext("2d");
 
-          const r = Math.min(iw, ih) * 0.06; // corner radius
-          // draw rounded clipping
+          const r = Math.min(iw, ih) * 0.06;
+
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           roundRect(ctx, 0, 0, canvas.width, canvas.height, r);
           ctx.clip();
@@ -62,14 +65,11 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
           canvas.height = canvasH;
           const ctx = canvas.getContext("2d");
 
-          // white background
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, canvasW, canvasH);
 
-          // image
           ctx.drawImage(img, pad, pad, iw, ih);
 
-          // subtle border
           ctx.strokeStyle = "#dddddd";
           ctx.lineWidth = 2;
           ctx.strokeRect(pad - 1, pad - 1, iw + 2, ih + 2);
@@ -87,21 +87,17 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
           canvas.height = canvasH;
           const ctx = canvas.getContext("2d");
 
-          // vintage gradient background
           const g = ctx.createLinearGradient(0, 0, canvasW, canvasH);
           g.addColorStop(0, "#f6ecd2");
           g.addColorStop(1, "#e8d3b3");
           ctx.fillStyle = g;
           ctx.fillRect(0, 0, canvasW, canvasH);
 
-          // inner frame background (slightly darker)
           ctx.fillStyle = "rgba(255,255,255,0.9)";
           ctx.fillRect(pad, pad, iw, ih);
 
-          // draw image
           ctx.drawImage(img, pad, pad, iw, ih);
 
-          // vintage border
           ctx.strokeStyle = "rgba(80,40,20,0.12)";
           ctx.lineWidth = Math.max(4, Math.round(Math.min(iw, ih) * 0.02));
           ctx.strokeRect(pad - 1, pad - 1, iw + 2, ih + 2);
@@ -110,7 +106,6 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
           return;
         }
 
-        // overlay/frame PNG support (e.g. PhotoRacca_Frame0)
         if (selectedFrame === "frame0") {
           const overlay = new Image();
           overlay.onload = () => {
@@ -118,21 +113,19 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
             canvas.width = iw;
             canvas.height = ih;
             const ctx = canvas.getContext("2d");
-            // draw base image full-size
+            
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            // draw overlay scaled to same size
+            
             ctx.drawImage(overlay, 0, 0, canvas.width, canvas.height);
             resolve(canvas.toDataURL("image/png"));
           };
           overlay.onerror = () => {
-            // if overlay fails, fallback to original
             resolve(dataUrl);
           };
           overlay.src = PhotoRacca_frame0;
           return;
         }
 
-        // fallback: return original
         resolve(dataUrl);
       };
       img.onerror = () => reject(new Error("Failed to load captured image"));
@@ -140,7 +133,6 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
     });
   };
 
-  // draw rounded rectangle helper
   const roundRect = (ctx, x, y, w, h, r) => {
     if (w < 2 * r) r = w / 2;
     if (h < 2 * r) r = h / 2;
@@ -153,7 +145,6 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
     ctx.closePath();
   };
 
-  // Small inline styles for preview and frames
   const previewStyles = {
     container: {
       background: "rgba(0, 0, 0, 0.5)",
@@ -178,12 +169,12 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
       position: "relative",
       display: "block",
       width: "100%",
-      maxWidth: "960px", // scale preview down in UI but keep aspect
+      maxWidth: "960px", 
       height: "auto",
       objectFit: "contain",
       boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
     },
-    // frames implemented via additional wrapper styles
+
     frames: {
       polaroid: {
         padding: "18px 18px 46px 18px",
@@ -208,9 +199,9 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
   };
   useImperativeHandle(ref, () => ({
     takePhoto: () => {
-      if (running) return; // Prevent multiple presses
+      if (running) return;
       setRunning(true);
-      let count = 3; // 3-second countdown
+      let count =3; 
       setCurrentCount(count);
 
       const timer = setInterval(() => {
@@ -218,6 +209,9 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
         setCurrentCount(count);
         if (count <= 0) {
           clearInterval(timer);
+
+          shutterSounda.current.currentTime = 0;
+          shutterSounda.current.play();
 
           const video = videoRef.current;
           const canvas = canvasRef.current;
@@ -236,7 +230,6 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
           const imageData = canvas.toDataURL("image/png");
           setCapturedData(imageData);
 
-          // Generate preview
           try {
             const PREVIEW_W = 1920;
             const PREVIEW_H = 1080;
@@ -265,9 +258,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
       }, 1000);
     },
     
-    // returns a Promise resolving to a dataURL that includes the currently selected frame
     getFramedData: async () => {
-      // Prefer cached framedData if available
       if (!capturedData) return null;
       if (framedData) return framedData;
       try {
@@ -280,14 +271,12 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
     },
   }));
 
-  // keep a cached framed data URL so callers (gallery) can grab it synchronously via getFramedData
   useEffect(() => {
     let mounted = true;
     if (!capturedData) {
       setFramedData(null);
       return;
     }
-    // async compose
     (async () => {
       try {
         const fd = await generateFramedDataUrl(capturedData, frame);
@@ -304,7 +293,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
   return (
     <div className="singlePhotoMode">
       <Helmet>
-        <title>Single Photo Capture</title>
+        <title>Photoracca App</title>
         <meta name="description" content="Capture a single photo with optional frames using Photoracca Desktop." />
         <meta property="og:title" content="Single Photo Capture" />
         <meta property="og:description" content="Capture a single photo with optional frames using Photoracca Desktop." />
@@ -366,7 +355,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
             )}
           </div>
 
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "20px", borderTop: "1px solid #ccc" }}>
             <button className="buttons-single"
               onClick={async () => {
                 try {
@@ -385,9 +374,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
             <button
               className="buttons-single"
               onClick={() => {
+                setCurrentCount(0);
                 setShowPreview(false);
-                // keep capturedData if user wants to re-open preview; clear if you prefer
-                // setCapturedData(null);
               }}
             >
               Close Preview
