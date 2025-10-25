@@ -20,7 +20,7 @@
 
 .Header{
   max-width: 1700px;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -30,8 +30,8 @@
 }
 
 .logo{
-  width: 100%;
-  max-width: 500px;
+  width: 80%;
+  max-width: 300px;
   height: auto;
   display: flex;
   justify-self: center;
@@ -116,17 +116,37 @@
 
 
 
-@media only screen and (max-width: 1000px) {
-  .footerMain{
+@media only screen and (min-width: 1090px) and (max-width: 1499px) {
+  .footerMain {
     font-size: 18px;
-    position: relative;
     bottom: -10px;
     max-width: 1600px;
-    width: 90%;
-    margin: 0 auto;
-    color: rgb(0, 0, 0);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  }
+
+  .modeSelectorBtn,
+  .takePhotoBtn {
+    font-size: 20px;
+    width: 70%;
+  }
+
+  .videoStreamed {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+@media only screen and (min-width: 1500px) {
+  .footerMain {
+    font-size: 20px;
+  }
+
+  .modeSelectorBtn,
+  .takePhotoBtn {
+    font-size: 22px;
+    width: 60%;
+  }
+
+  .videoStreamed {
+    width: 100%;
+    max-width: 600px;
   }
 }

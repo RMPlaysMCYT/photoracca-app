@@ -68,3 +68,24 @@
     cursor: pointer;
     transition: ease-in 0.1s;
 }
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 1500px) {
+  .buttons-single{
+    width: 100%;
+    max-Width: 100px;
+    padding: 10px 10px 10px 10px;
+  }
+  .select-design{
+    width: 100%;
+    max-Width: 100px;
+    padding: 10px 10px 10px 10px;
+  }
+}

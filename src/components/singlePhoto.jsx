@@ -1,5 +1,8 @@
 import { forwardRef, useImperativeHandle, useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
+
+import { ImageDown } from "lucide-react";
+
 import PhotoRacca_frame0 from "./PhotoRacca_frame0.png";
 
 import shutterSound from "../audio/shutter.mp3";
@@ -154,7 +157,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
       flexDirection: "column",
       alignItems: "center",
       alignSelf: "center",
-      gap: "12px",
+      gap: "20px",
       marginTop: "12px",
       padding: "200px",
       bottom: "10vh",
@@ -162,13 +165,13 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
     imgWrapper: {
       position: "relative",
       display: "inline-block",
-      maxWidth: "90%",
+      // maxWidth: "90%",
       boxSizing: "border-box",
     },
     img: {
       position: "relative",
       display: "block",
-      width: "100%",
+      // width: "100%",
       maxWidth: "960px", 
       height: "auto",
       objectFit: "contain",
@@ -201,7 +204,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
     takePhoto: () => {
       if (running) return;
       setRunning(true);
-      let count =3; 
+      let count = 1; 
       setCurrentCount(count);
 
       const timer = setInterval(() => {
@@ -308,7 +311,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
       {/* Inline preview shown after takePhoto() is called */}
       {showPreview && capturedData && (
         <div style={previewStyles.container} className="capturePreview">
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <div className="selectorFrame" style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <label style={{ fontSize: 14 }}>Frame:</label>
             <select className="select-design" value={frame} onChange={(e) => setFrame(e.target.value)}>
               <option value="none">None</option>
@@ -326,6 +329,7 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
             }}
           >
             <img
+              className="Captured"
               alt="Captured"
               src={previewData || capturedData}
               style={{
@@ -355,8 +359,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
             )}
           </div>
 
-          <div style={{ display: "flex", gap: "20px", borderTop: "1px solid #ccc" }}>
-            <button className="buttons-single"
+          <div className="buttonsPrev" style={{ display: "flex", gap: "20px", borderTop: "1px solid #ccc" }}>
+            <button className="buttons-single" style={{display: "flex", alignItems: "center", gap: 20}}
               onClick={async () => {
                 try {
                   const date1 = new Date().toISOString();
@@ -369,7 +373,8 @@ const SinglePhoto = forwardRef(({ videoRef, canvasRef, mirrorPreview = false }, 
                 }
               }}
             >
-              Save Image
+            <ImageDown size={18} /> 
+            <span style={{fontFamily: "inherit"}}>Save Image</span>
             </button>
             <button
               className="buttons-single"
