@@ -1,0 +1,32 @@
+.StripPreview {
+    position: absolute;
+    margin: 12px 0 0 0;
+    right: -350px;
+    scale: 1.5;
+}
+
+/* .StripBox{
+    width: 180px; 
+    height: 390px;
+    border: "1px solid #ddd"; 
+    padding: 6;
+    transition: ease-in;
+    transform: translateY(0px);
+} */
+
+/* .StripBoxStripBox-Animated {
+    transform: translateY(-1000px);
+} */
+
+.StripBox {
+    width: 180px; 
+    height: 390px;
+    
+    transition: transform 2s ease-in-out;
+    transform: translateY(1000px);
+}
+
+.StripBoxStripBox-Animated {
+    transform: translateY(0);
+    transition: transform 2s ease-in-out;
+}

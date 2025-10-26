@@ -142,7 +142,7 @@
   .modeSelectorBtn,
   .takePhotoBtn {
     font-size: 22px;
-    width: 60%;
+    /* width: 45%; */
   }
 
   .videoStreamed {

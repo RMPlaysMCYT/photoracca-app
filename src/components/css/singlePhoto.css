@@ -34,11 +34,11 @@
 }
 
 
-@media only screen and (max-width: 1600px) {
+@media only screen and (max-width: 1501px) {
     .cameraButtons {
         flex-direction: column;
         align-content: center;
-        width: 560px;
+        width: 640px;
         justify-self: center;
     }
 
@@ -59,7 +59,7 @@
 }
 
 
-@media only screen and (min-width: 1000px) and (max-width: 1599px) {
+@media only screen and (min-width: 1000px) and (max-width: 1500px) {
     .selectorFrame{
         position: relative;
         top: -100px

@@ -31,8 +31,11 @@ import photoracca_strip_FrameOverlay1 from "../overlays/photoracca_strip_overlay
 import shutterSound from "../audio/shutter.mp3";
 
 import "../App.css";
+import "../components/css/multiplephoto.css";
 
 const MultiplePhotoStripeHeight = forwardRef(
+
+
   ({
     videoRef,
     canvasRef,
@@ -42,6 +45,8 @@ const MultiplePhotoStripeHeight = forwardRef(
     exportHeight = 5796,
     mirrorPreview = false,
   }, ref) => {
+
+
     const [running, setRunning] = useState(false);
     const [currentCount, setCurrentCount] = useState(0);
     const [photos, setPhotos] = useState([]);
@@ -51,6 +56,8 @@ const MultiplePhotoStripeHeight = forwardRef(
     const [stripOverlay2, setStripOverlay2] = useState("none");
     // const [stripDecoOverlay, setstripDecoOverlay] = useState("none");
     const [preset, setPreset] = useState("none");
+
+    const [isPhotoSaved, setisPhotosaved] = useState(false);
 
     const shutterSounda = useRef(new Audio(shutterSound));
 
@@ -99,6 +106,12 @@ const MultiplePhotoStripeHeight = forwardRef(
       ctx.closePath();
     };
 
+
+    const animClickHandler = () => {
+      setisPhotosaved(!isPhotoSaved);
+    };
+
+    const savePreviewAnim = `StripBox${isPhotoSaved ? `StripBox-Animated` : ``}`;
 
     const generateFramedDataUrl = (dataUrl, selectedFrame) => {
       return new Promise((resolve, reject) => {
@@ -409,6 +422,7 @@ const MultiplePhotoStripeHeight = forwardRef(
         return photos;
       },
       saveStrip: async () => {
+
         const toSave =
           framedPhotos.length === photos.length ? framedPhotos : photos;
 
@@ -416,41 +430,41 @@ const MultiplePhotoStripeHeight = forwardRef(
           stripOverlay === "strip0"
             ? photoracca_strip_Frame0
             : stripOverlay === "strip1"
-            ? photoracca_strip_Frame1
-            : stripOverlay === "strip2"
-            ? photoracca_strip_Frame2
-            : stripOverlay === "strip3"
-            ? photoracca_strip_Frame3
-            : stripOverlay === "strip4"
-            ? photoracca_strip_Frame4
-            : stripOverlay === "strip5"
-            ? photoracca_strip_Frame5
-            : stripOverlay === "strip6"
-            ? photoracca_strip_Frame6
-            : stripOverlay === "strip7"
-            ? photoracca_strip_Frame7
-            : stripOverlay === "strip8"
-            ? photoracca_strip_Frame8
-            : stripOverlay === "strip9"
-            ? photoracca_strip_Frame9
-            : stripOverlay === "strip10"
-            ? photoracca_strip_Frame10
-            : stripOverlay === "strip11"
-            ? photoracca_strip_Frame11
-            : stripOverlay === "strip12"
-            ? photoracca_strip_Frame12
-            : stripOverlay === "strip1Polaroid0"
-            ? photoracca_strip_Frame_Polaroid0
-            : stripOverlay === "strip1Polaroid1"
-            ? photoracca_strip_Frame_Polaroid1
-            : null;
+              ? photoracca_strip_Frame1
+              : stripOverlay === "strip2"
+                ? photoracca_strip_Frame2
+                : stripOverlay === "strip3"
+                  ? photoracca_strip_Frame3
+                  : stripOverlay === "strip4"
+                    ? photoracca_strip_Frame4
+                    : stripOverlay === "strip5"
+                      ? photoracca_strip_Frame5
+                      : stripOverlay === "strip6"
+                        ? photoracca_strip_Frame6
+                        : stripOverlay === "strip7"
+                          ? photoracca_strip_Frame7
+                          : stripOverlay === "strip8"
+                            ? photoracca_strip_Frame8
+                            : stripOverlay === "strip9"
+                              ? photoracca_strip_Frame9
+                              : stripOverlay === "strip10"
+                                ? photoracca_strip_Frame10
+                                : stripOverlay === "strip11"
+                                  ? photoracca_strip_Frame11
+                                  : stripOverlay === "strip12"
+                                    ? photoracca_strip_Frame12
+                                    : stripOverlay === "strip1Polaroid0"
+                                      ? photoracca_strip_Frame_Polaroid0
+                                      : stripOverlay === "strip1Polaroid1"
+                                        ? photoracca_strip_Frame_Polaroid1
+                                        : null;
 
         const overlaySrc2 =
           stripOverlay2 === "stripDeco0"
             ? photoracca_strip_FrameOverlay0
             : stripOverlay2 === "stripDeco1"
-            ? photoracca_strip_FrameOverlay1
-            : null;
+              ? photoracca_strip_FrameOverlay1
+              : null;
 
         const strip = await composeStrip(
           toSave,
@@ -463,8 +477,8 @@ const MultiplePhotoStripeHeight = forwardRef(
           "overlay",
           exportHeight
         );
-
-        if (strip) downloadDataUrl(strip, "photoracca_strip.png");
+        const date = new Date().toISOString();
+        if (strip) downloadDataUrl(strip, `photoracca_strip_${date}.png`);
         return strip;
       },
     }));
@@ -489,42 +503,42 @@ const MultiplePhotoStripeHeight = forwardRef(
         stripOverlay === "strip0"
           ? photoracca_strip_Frame0
           : stripOverlay === "strip1"
-          ? photoracca_strip_Frame1
-          : stripOverlay === "strip2"
-          ? photoracca_strip_Frame2
-          : stripOverlay === "strip3"
-          ? photoracca_strip_Frame3
-          : stripOverlay === "strip4"
-          ? photoracca_strip_Frame4
-          : stripOverlay === "strip5"
-          ? photoracca_strip_Frame5
-          : stripOverlay === "strip6"
-          ? photoracca_strip_Frame6
-          : stripOverlay === "strip7"
-          ? photoracca_strip_Frame7
-          : stripOverlay === "strip8"
-          ? photoracca_strip_Frame8
-          : stripOverlay === "strip9"
-          ? photoracca_strip_Frame9
-          : stripOverlay === "strip10"
-          ? photoracca_strip_Frame10
-          : stripOverlay === "strip11"
-          ? photoracca_strip_Frame11
-          : stripOverlay === "strip12"
-          ? photoracca_strip_Frame12
-            
-          : stripOverlay === "strip1Polaroid0"
-          ? photoracca_strip_Frame_Polaroid0
-          : stripOverlay === "strip1Polaroid1"
-          ? photoracca_strip_Frame_Polaroid1
-          : null;
+            ? photoracca_strip_Frame1
+            : stripOverlay === "strip2"
+              ? photoracca_strip_Frame2
+              : stripOverlay === "strip3"
+                ? photoracca_strip_Frame3
+                : stripOverlay === "strip4"
+                  ? photoracca_strip_Frame4
+                  : stripOverlay === "strip5"
+                    ? photoracca_strip_Frame5
+                    : stripOverlay === "strip6"
+                      ? photoracca_strip_Frame6
+                      : stripOverlay === "strip7"
+                        ? photoracca_strip_Frame7
+                        : stripOverlay === "strip8"
+                          ? photoracca_strip_Frame8
+                          : stripOverlay === "strip9"
+                            ? photoracca_strip_Frame9
+                            : stripOverlay === "strip10"
+                              ? photoracca_strip_Frame10
+                              : stripOverlay === "strip11"
+                                ? photoracca_strip_Frame11
+                                : stripOverlay === "strip12"
+                                  ? photoracca_strip_Frame12
+
+                                  : stripOverlay === "strip1Polaroid0"
+                                    ? photoracca_strip_Frame_Polaroid0
+                                    : stripOverlay === "strip1Polaroid1"
+                                      ? photoracca_strip_Frame_Polaroid1
+                                      : null;
 
       const overlaySrc2 =
         stripOverlay2 === "stripDeco0"
           ? photoracca_strip_FrameOverlay0
           : stripOverlay2 === "stripDeco1"
-          ? photoracca_strip_FrameOverlay1
-          : null;
+            ? photoracca_strip_FrameOverlay1
+            : null;
 
       (async () => {
         try {
@@ -549,6 +563,8 @@ const MultiplePhotoStripeHeight = forwardRef(
       };
     }, [framedPhotos, photos, stripOverlay, stripOverlay2]);
 
+
+
     return (
       <div className="multiplePhotoStripe" style={{ padding: 12 }}>
         <Helmet>
@@ -567,7 +583,7 @@ const MultiplePhotoStripeHeight = forwardRef(
         <div
           style={{
             position: "relative",
-            left: 190,
+            left: 90,
             display: "flex",
             gap: 8,
             alignItems: "center",
@@ -575,7 +591,7 @@ const MultiplePhotoStripeHeight = forwardRef(
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Style Preset:</label>
+            {/* <label>Style Preset:</label> */}
             <select
               className="select-design"
               value={preset}
@@ -628,7 +644,7 @@ const MultiplePhotoStripeHeight = forwardRef(
           </div>
 
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Frame:</label>
+            {/* <label>Frame:</label> */}
             <select
               className="select-design"
               value={frame}
@@ -643,7 +659,7 @@ const MultiplePhotoStripeHeight = forwardRef(
           </div>
 
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Strip Overlay:</label>
+            {/* <label>Strip Overlay:</label> */}
             <select
               className="select-design"
               value={stripOverlay}
@@ -668,7 +684,7 @@ const MultiplePhotoStripeHeight = forwardRef(
             </select>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Strip Decoration Overlay:</label>
+            {/* <label>Strip Decoration Overlay:</label> */}
             <select
               className="select-design"
               value={stripOverlay2}
@@ -684,7 +700,7 @@ const MultiplePhotoStripeHeight = forwardRef(
           Start Strip ({maxPhotos} photos)
         </button> */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Click Stop when stop shooting</label>
+            {/* <label>Click Stop when stop shooting</label> */}
             <button
               className="buttons-single"
               onClick={() => {
@@ -698,14 +714,59 @@ const MultiplePhotoStripeHeight = forwardRef(
             </button>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Save Strip</label>
+            {/* <label>Save Strip</label> */}
             <button
               className="buttons-single"
-              onClick={async () => {
+              // disabled={!hasPhotos}
+              onClick={
+                async () => {
+                animClickHandler();
                 const s = await (ref && ref.current && ref.current.saveStrip
                   ? ref.current.saveStrip()
                   : null);
                 if (!s) {
+                  const toSave = framedPhotos.length === photos.length ? framedPhotos : photos;
+                  const overlaySrc = stripOverlay === "strip0"
+                    ? photoracca_strip_Frame0
+                    : stripOverlay === "strip1"
+                    ? photoracca_strip_Frame1
+                    : stripOverlay === "strip2"
+                    ? photoracca_strip_Frame2
+                    : stripOverlay === "strip3"
+                    ? photoracca_strip_Frame3
+                    : stripOverlay === "strip4"
+                    ? photoracca_strip_Frame4
+                    : stripOverlay === "strip5"
+                    ? photoracca_strip_Frame5
+                    : stripOverlay === "strip6"
+                    ? photoracca_strip_Frame6
+                    : stripOverlay === "strip7"
+                    ? photoracca_strip_Frame7
+                    : stripOverlay === "strip8"
+                    ? photoracca_strip_Frame8
+                    : stripOverlay === "strip9"
+                    ? photoracca_strip_Frame9
+                    : stripOverlay === "strip10"
+                    ? photoracca_strip_Frame10
+                    : stripOverlay === "strip11"
+                    ? photoracca_strip_Frame11
+                    : stripOverlay === "strip12"
+                    ? photoracca_strip_Frame12
+                    : stripOverlay === "strip1Polaroid0"
+                    ? photoracca_strip_Frame_Polaroid0
+                    : stripOverlay === "strip1Polaroid1"
+                    ? photoracca_strip_Frame_Polaroid1
+                    : null;
+
+
+                  const overlaySrc2 =
+                    stripOverlay2 === "stripDeco0"
+                    ? photoracca_strip_deco_Frame0
+                    : stripOverlay2 === "stripDeco1"
+                    ? photoracca_strip_deco_Frame1
+                    : null;
+
+
                   const date1 = new Date().toISOString();
                   const strip = await composeStrip(
                     toSave,
@@ -718,8 +779,17 @@ const MultiplePhotoStripeHeight = forwardRef(
                     "overlay",
                     exportHeight
                   );
-                  if (strip)
-                    downloadDataUrl(strip, `photoracca_strip_${date1}.png`);
+                  if (!strip) {
+                    <div>
+                      <h1>
+                        You didn't save the strip, but it was saved in your browser
+                      </h1>
+                    </div>
+                    return;
+                  }
+                  downloadDataUrl(strip, `photoracca_strip_${date1}.png`);
+                } else {
+
                 }
               }}
             >
@@ -759,9 +829,9 @@ const MultiplePhotoStripeHeight = forwardRef(
 
           {/* Preview Stripe */}
           {previewStrip && (
-            <div style={{ position: "absolute", marginTop: 12, right: -350, scale: 1.7 }}>
+            <div  className="StripPreview" style={{}}>
               <label>Strip Preview</label>
-              <div style={{ width: 180, border: "1px solid #ddd", padding: 6 }}>
+              <div className={savePreviewAnim}>
                 <img
                   src={previewStrip}
                   alt="photobooth strip preview"
