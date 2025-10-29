@@ -1,0 +1,29 @@
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+  border: none;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}

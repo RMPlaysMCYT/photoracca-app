@@ -5,7 +5,7 @@ import { useWebCamera } from "../code_Modules/webCameraAPI";
 import SinglePhoto from "./singlePhoto"; // Make sure to import SinglePhoto
 import MultiplePhotoStripe from "./multiplePhotoStripe";
 import MultiplePhotoStripeHeight from "./multiplePhotoStripeHeight";
-// import MultiplePhotoStandard from "./multiplephotoStandard";
+import MultiplePhotoStandard from "./multiplephotoStandard";
 
 const Home = () => {
   const { videoRef, photoReferencial, deviceId, setDeviceId, facingMode, setFacingMode } = useWebCamera();
@@ -54,6 +54,10 @@ const Home = () => {
       stripeRef.current.startStrip();
     }
     if (currentMode === "multiple2" && stripeRef.current) {
+      // start the 3s countdown strip capture (up to configured photos)
+      stripeRef.current.startStrip();
+    }
+    if (currentMode === "multiple3" && stripeRef.current) {
       // start the 3s countdown strip capture (up to configured photos)
       stripeRef.current.startStrip();
     }
@@ -108,7 +112,7 @@ const Home = () => {
           />
         )}
         
-        {/* {currentMode === "multiple3" && (
+        {currentMode === "multiple3" && (
           <MultiplePhotoStandard
             ref={stripeRef}
             videoRef={videoRef}
@@ -117,7 +121,7 @@ const Home = () => {
             maxPhotos={4}
             mirrorPreview={mirrorPreview}
           />
-        )} */}
+        )}
         {/* Add other mode components here */}
 
         <div className="cameraButtons">
@@ -129,7 +133,7 @@ const Home = () => {
             <option value="single">Single Photo</option>
             <option value="multiple">Multiple Photos</option>
             <option value="multiple2">Multiple Photos Stripe</option>
-            {/* <option value="multiple3">Multiple Photos Stripe Standard</option> */}
+            <option value="multiple3">Multiple Photos Stripe Standard</option>
           </select>
           <select
             className="modeSelectorBtn"

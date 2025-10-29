@@ -1,0 +1,8 @@
+.cameraButtons{
+  position: relative;
+  left: 120px;
+  padding: 20px 0 0 0 ;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
