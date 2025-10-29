@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useWebCamera } from "../code_Modules/webCameraAPI";
+
+//Pages
 import SinglePhoto from "./singlePhoto"; // Make sure to import SinglePhoto
 import MultiplePhotoStripe from "./multiplePhotoStripe";
 import MultiplePhotoStripeHeight from "./multiplePhotoStripeHeight";
+// import MultiplePhotoStandard from "./multiplephotoStandard";
 
 const Home = () => {
   const { videoRef, photoReferencial, deviceId, setDeviceId, facingMode, setFacingMode } = useWebCamera();
@@ -104,6 +107,17 @@ const Home = () => {
             mirrorPreview={mirrorPreview}
           />
         )}
+        
+        {/* {currentMode === "multiple3" && (
+          <MultiplePhotoStandard
+            ref={stripeRef}
+            videoRef={videoRef}
+            canvasRef={photoReferencial}
+            countdown={3}
+            maxPhotos={4}
+            mirrorPreview={mirrorPreview}
+          />
+        )} */}
         {/* Add other mode components here */}
 
         <div className="cameraButtons">
@@ -115,6 +129,7 @@ const Home = () => {
             <option value="single">Single Photo</option>
             <option value="multiple">Multiple Photos</option>
             <option value="multiple2">Multiple Photos Stripe</option>
+            {/* <option value="multiple3">Multiple Photos Stripe Standard</option> */}
           </select>
           <select
             className="modeSelectorBtn"
