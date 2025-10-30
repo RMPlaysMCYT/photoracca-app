@@ -551,7 +551,7 @@ const MultiplePhotoStandard = forwardRef(
 
         {/* Capture UI */}
         {running && (
-          <div style={{ fontSize: 48, textAlign: "center", margin: "20px 0" }}>
+          <div style={{ position: "absolute", top: 300, fontSize: 48, textAlign: "center", margin: "20px 0" }}>
             {count > 0 ? count : "📸"}
           </div>
         )}
@@ -573,7 +573,7 @@ const MultiplePhotoStandard = forwardRef(
         {/* Download */}
         {photos.length === shotsCount && (
           <button onClick={downloadFinal} style={{ marginTop: 12 }}>
-            Download Final ({layoutState}, {shotsCount} shots)
+            Save Photo ({layoutState}, {shotsCount} shots)
           </button>
         )}
       </div>
