@@ -551,7 +551,7 @@ const MultiplePhotoStandard = forwardRef(
 
         {/* Capture UI */}
         {running && (
-          <div style={{ position: "absolute", top: 300, fontSize: 48, textAlign: "center", margin: "20px 0" }}>
+          <div style={{ position: "absolute", top: 300, left: 440, fontSize: 48, textAlign: "center", margin: "20px 0" }}>
             {count > 0 ? count : "📸"}
           </div>
         )}
