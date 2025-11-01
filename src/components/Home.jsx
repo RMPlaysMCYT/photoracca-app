@@ -72,13 +72,15 @@ const Home = () => {
     <main className="Homepage">
       <div className="MainWindow">
         <div className="VideoFrame">
-          <video
+          <div className="ColorBackground">
+            <video
             className="videoStreamed"
             ref={videoRef}
             autoPlay
             playsInline
             style={{ transform: mirrorPreview ? 'scaleX(-1)' : 'none' }}
           />
+          </div>
           <canvas ref={photoReferencial} style={{ display: "none" }} />
         </div>
 

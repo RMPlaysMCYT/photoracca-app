@@ -1,6 +1,21 @@
-import React, { forwardRef, useImperativeHandle, useState, useEffect, useRef } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import PropTypes from "prop-types";
-import { saveFrame, getAllFrames, deleteFrame, getFramesByLayout } from "../utils/frameStorage";
+import {
+  saveFrame,
+  getAllFrames,
+  deleteFrame,
+  getFramesByLayout,
+} from "../utils/frameStorage";
+
+import "./css/buttons.css";
+import "./css/MultiPhotStanCtrl.css";
+
 
 // Optional: import icons if lucide-react is installed, otherwise use text fallbacks
 let Trash2, Save, Upload, X;
@@ -46,16 +61,18 @@ const MultiplePhotoStandard = forwardRef(
     const [frameOverlay, setFrameOverlay] = useState(null);
     const [decoOverlay, setDecoOverlay] = useState(null);
     const [layoutState, setLayoutState] = useState(layout);
-    const [showGuides, setShowGuides] = useState(true);
+    const [showGuides, setShowGuides] = useState(false);
     const [frameScope, setFrameScope] = useState("canvas");
     const [shotsCount, setShotsCount] = useState(4);
-    const [borderMm, setBorderMm] = useState(0);
-    
+    const [borderMm, setBorderMm] = useState(3.5);
+
     // Frame management states
     const [savedFrames, setSavedFrames] = useState([]);
     const [selectedFrameId, setSelectedFrameId] = useState(null);
     const [frameName, setFrameName] = useState("");
     const [showFrameManager, setShowFrameManager] = useState(false);
+
+    const [showDecoFrameManager, setShowDecoFrameManager] = useState(false);
 
     const shutterAudio = useRef(shutterSound ? new Audio(shutterSound) : null);
     const frameInputRef = useRef(null);
@@ -84,7 +101,7 @@ const MultiplePhotoStandard = forwardRef(
     const handleFrameUpload = (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      
+
       const reader = new FileReader();
       reader.onload = (evt) => {
         setFrameOverlay(evt.target.result);
@@ -97,7 +114,7 @@ const MultiplePhotoStandard = forwardRef(
     const handleDecoUpload = (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      
+
       const reader = new FileReader();
       reader.onload = (evt) => {
         setDecoOverlay(evt.target.result);
@@ -124,7 +141,7 @@ const MultiplePhotoStandard = forwardRef(
           layoutType: layoutState,
           borderMm,
         });
-        
+
         setFrameName("");
         await loadFrames();
         window.alert("Frame saved successfully!");
@@ -167,7 +184,7 @@ const MultiplePhotoStandard = forwardRef(
 
     // Load a saved frame
     const handleLoadFrame = async (frameId) => {
-      const frame = savedFrames.find(f => f.id === frameId);
+      const frame = savedFrames.find((f) => f.id === frameId);
       if (!frame) return;
 
       setFrameOverlay(frame.dataUrl);
@@ -222,7 +239,13 @@ const MultiplePhotoStandard = forwardRef(
       // Capture frame
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      if (!video || !canvas || video.videoWidth === 0 || video.videoHeight === 0 || (video.readyState !== undefined && video.readyState < 2)) {
+      if (
+        !video ||
+        !canvas ||
+        video.videoWidth === 0 ||
+        video.videoHeight === 0 ||
+        (video.readyState !== undefined && video.readyState < 2)
+      ) {
         console.warn("Video not ready, retrying capture shortly...");
         const retry = setTimeout(() => {
           // trigger capture branch again without restarting whole strip
@@ -246,10 +269,19 @@ const MultiplePhotoStandard = forwardRef(
       ctx.restore();
 
       const dataUrl = canvas.toDataURL("image/png");
-      setPhotos(prev => [...prev, dataUrl]);
-      setCurrentIndex(prev => prev + 1);
+      setPhotos((prev) => [...prev, dataUrl]);
+      setCurrentIndex((prev) => prev + 1);
       setCount(countdown);
-    }, [running, count, currentIndex, shotsCount, countdown, mirrorPreview, videoRef, canvasRef]);
+    }, [
+      running,
+      count,
+      currentIndex,
+      shotsCount,
+      countdown,
+      mirrorPreview,
+      videoRef,
+      canvasRef,
+    ]);
 
     // Compose final printable image
     const composeFinalImage = () => {
@@ -270,8 +302,13 @@ const MultiplePhotoStandard = forwardRef(
         const actualShots = Math.min(photos.length, shotsCount);
         let cols, rows;
         if (layoutState === "4x6") {
-          if (actualShots === 4) { cols = 2; rows = 2; }
-          else { cols = 1; rows = actualShots; }
+          if (actualShots === 4) {
+            cols = 2;
+            rows = 2;
+          } else {
+            cols = 1;
+            rows = actualShots;
+          }
         } else {
           cols = 1;
           rows = actualShots;
@@ -348,8 +385,10 @@ const MultiplePhotoStandard = forwardRef(
                   ctx.strokeStyle = "rgba(0,0,0,0.3)";
                   ctx.setLineDash([5, 5]);
                   ctx.lineWidth = 1;
-                  for (let c = 1; c < cols; c++) ctx.strokeRect(c * slotW, 0, 0, canvasH);
-                  for (let r = 1; r < rows; r++) ctx.strokeRect(0, r * slotH, canvasW, 0);
+                  for (let c = 1; c < cols; c++)
+                    ctx.strokeRect(c * slotW, 0, 0, canvasH);
+                  for (let r = 1; r < rows; r++)
+                    ctx.strokeRect(0, r * slotH, canvasW, 0);
                 }
                 resolve(finalCanvas.toDataURL("image/png"));
               } else {
@@ -357,8 +396,10 @@ const MultiplePhotoStandard = forwardRef(
                   ctx.strokeStyle = "rgba(0,0,0,0.3)";
                   ctx.setLineDash([5, 5]);
                   ctx.lineWidth = 1;
-                  for (let c = 1; c < cols; c++) ctx.strokeRect(c * slotW, 0, 0, canvasH);
-                  for (let r = 1; r < rows; r++) ctx.strokeRect(0, r * slotH, canvasW, 0);
+                  for (let c = 1; c < cols; c++)
+                    ctx.strokeRect(c * slotW, 0, 0, canvasH);
+                  for (let r = 1; r < rows; r++)
+                    ctx.strokeRect(0, r * slotH, canvasW, 0);
                 }
                 resolve(finalCanvas.toDataURL("image/png"));
               }
@@ -380,14 +421,24 @@ const MultiplePhotoStandard = forwardRef(
     };
 
     return (
-      <div style={{ padding: 20 }}>
+      <div className="MultiPhotStanCtrl" style={{ padding: 20 }}>
         <h3>Multiple Photo Standard</h3>
-        
+
         {/* Layout & Shots Controls */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 12, flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            marginBottom: 12,
+            flexWrap: "wrap",
+          }}
+        >
           <label>
             Layout:
-            <select value={layoutState} onChange={(e) => setLayoutState(e.target.value)}>
+            <select
+              value={layoutState}
+              onChange={(e) => setLayoutState(e.target.value)}
+            >
               <option value="4x6">4×6 inch</option>
               <option value="2x6">2×6 inch</option>
             </select>
@@ -395,13 +446,16 @@ const MultiplePhotoStandard = forwardRef(
 
           <label>
             Shots:
-            <select value={shotsCount} onChange={(e) => setShotsCount(Number(e.target.value))}>
+            <select
+              value={shotsCount}
+              onChange={(e) => setShotsCount(Number(e.target.value))}
+            >
               <option value={2}>2</option>
               <option value={4}>4</option>
             </select>
           </label>
 
-          <label>
+          {/* <label>
             Border (mm):
             <input
               type="number"
@@ -412,167 +466,267 @@ const MultiplePhotoStandard = forwardRef(
               onChange={(e) => setBorderMm(Number(e.target.value))}
               style={{ width: 60 }}
             />
-          </label>
+          </label> */}
 
-          <label>
+          {/* <label>
             Frame scope:
-            <select value={frameScope} onChange={(e) => setFrameScope(e.target.value)}>
+            <select
+              value={frameScope}
+              onChange={(e) => setFrameScope(e.target.value)}
+            >
               <option value="canvas">Whole canvas</option>
               <option value="slot">Per slot</option>
             </select>
-          </label>
+          </label> */}
 
-          <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {/* <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <input
               type="checkbox"
               checked={showGuides}
               onChange={(e) => setShowGuides(e.target.checked)}
             />
             Show print guides
-          </label>
+          </label> */}
+
+          <button
+            className="ButtonDesign0"
+            onClick={() => setShowDecoFrameManager(!showDecoFrameManager)}
+          >
+            {showDecoFrameManager ? "Hide" : "Show"} Manager
+          </button>
         </div>
 
-        {/* Frame Management */}
-        <div style={{ display: "grid", gridTemplateColumns: 2, marginBottom: 12, padding: 12, background: "#f5f5f5", borderRadius: 4 }}>
-          <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-            <h4 style={{ margin: 0 }}>Custom Frames</h4>
-            <button onClick={() => setShowFrameManager(!showFrameManager)} style={{ fontSize: 12 }}>
-              {showFrameManager ? "Hide" : "Show"} Manager
-            </button>
-          </div>
-
-          {showFrameManager && (
-            <>
-              {/* Upload new frame */}
-              <div style={{ marginBottom: 12 }}>
-                <input
-                  ref={frameInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFrameUpload}
-                  style={{ display: "none" }}
-                />
-                <button onClick={() => frameInputRef.current?.click()} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <Upload size={16} /> Upload Frame Image
+        {showDecoFrameManager && (
+          <div>
+            {/* Frame Management */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: 2,
+                marginBottom: 12,
+                padding: 12,
+                background: "#f5f5f5",
+                borderRadius: 4,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  marginBottom: 8,
+                  alignItems: "center",
+                }}
+              >
+                <h4 style={{ margin: 0 }}>Custom Frames</h4>
+                <button
+                  onClick={() => setShowFrameManager(!showFrameManager)}
+                  style={{ fontSize: 12 }}
+                >
+                  {showFrameManager ? "Hide" : "Show"} Manager
                 </button>
-                {frameOverlay && !selectedFrameId && (
-                  <button onClick={() => setFrameOverlay(null)} style={{ marginLeft: 8 }}>
-                    <X size={16} /> Clear
-                  </button>
-                )}
               </div>
 
-              {/* Save frame */}
-              {frameOverlay && !selectedFrameId && (
-                <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                  <input
-                    type="text"
-                    placeholder="Frame name..."
-                    value={frameName}
-                    onChange={(e) => setFrameName(e.target.value)}
-                    style={{ flex: 1 }}
-                  />
-                  <button onClick={handleSaveFrame} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                    <Save size={16} /> Save Frame
-                  </button>
-                </div>
-              )}
-
-              {/* Saved frames list */}
-              {savedFrames.length > 0 && (
-                <div>
-                  <p style={{ fontSize: 12, margin: "8px 0 4px" }}>Saved frames for {layoutState}:</p>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                    {savedFrames.map((frame) => (
-                      <div
-                        key={frame.id}
-                        style={{
-                          border: selectedFrameId === frame.id ? "2px solid #007bff" : "1px solid #ccc",
-                          borderRadius: 4,
-                          padding: 8,
-                          cursor: "pointer",
-                          background: selectedFrameId === frame.id ? "#e7f3ff" : "#fff",
-                          position: "relative",
-                        }}
-                        onClick={() => handleLoadFrame(frame.id)}
+              {showFrameManager && (
+                <>
+                  {/* Upload new frame */}
+                  <div style={{ marginBottom: 12 }}>
+                    <input
+                      ref={frameInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFrameUpload}
+                      style={{ display: "none" }}
+                    />
+                    <button
+                      onClick={() => frameInputRef.current?.click()}
+                      style={{ display: "flex", alignItems: "center", gap: 4 }}
+                    >
+                      <Upload size={16} /> Upload Frame Image
+                    </button>
+                    {frameOverlay && !selectedFrameId && (
+                      <button
+                        onClick={() => setFrameOverlay(null)}
+                        style={{ marginLeft: 8 }}
                       >
-                        <img
-                          src={frame.dataUrl}
-                          alt={frame.name}
-                          style={{ width: 60, height: 60, objectFit: "contain", display: "block" }}
-                        />
-                        <p style={{ margin: "4px 0 0", fontSize: 11, textAlign: "center" }}>{frame.name}</p>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteFrame(frame.id);
-                          }}
-                          style={{
-                            position: "absolute",
-                            top: 2,
-                            right: 2,
-                            padding: 2,
-                            background: "#ff4444",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: 2,
-                            cursor: "pointer",
-                          }}
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    ))}
+                        <X size={16} /> Clear
+                      </button>
+                    )}
                   </div>
+
+                  {/* Save frame */}
+                  {frameOverlay && !selectedFrameId && (
+                    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                      <input
+                        type="text"
+                        placeholder="Frame name..."
+                        value={frameName}
+                        onChange={(e) => setFrameName(e.target.value)}
+                        style={{ flex: 1 }}
+                      />
+                      <button
+                        onClick={handleSaveFrame}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <Save size={16} /> Save Frame
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Saved frames list */}
+                  {savedFrames.length > 0 && (
+                    <div>
+                      <p style={{ fontSize: 12, margin: "8px 0 4px" }}>
+                        Saved frames for {layoutState}:
+                      </p>
+                      <div
+                        style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
+                      >
+                        {savedFrames.map((frame) => (
+                          <div
+                            key={frame.id}
+                            style={{
+                              border:
+                                selectedFrameId === frame.id
+                                  ? "2px solid #007bff"
+                                  : "1px solid #ccc",
+                              borderRadius: 4,
+                              padding: 8,
+                              cursor: "pointer",
+                              background:
+                                selectedFrameId === frame.id
+                                  ? "#e7f3ff"
+                                  : "#fff",
+                              position: "relative",
+                            }}
+                            onClick={() => handleLoadFrame(frame.id)}
+                          >
+                            <img
+                              src={frame.dataUrl}
+                              alt={frame.name}
+                              style={{
+                                width: 60,
+                                height: 60,
+                                objectFit: "contain",
+                                display: "block",
+                              }}
+                            />
+                            <p
+                              style={{
+                                margin: "4px 0 0",
+                                fontSize: 11,
+                                textAlign: "center",
+                              }}
+                            >
+                              {frame.name}
+                            </p>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteFrame(frame.id);
+                              }}
+                              style={{
+                                position: "absolute",
+                                top: 2,
+                                right: 2,
+                                padding: 2,
+                                background: "#ff4444",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: 2,
+                                cursor: "pointer",
+                              }}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  marginBottom: 8,
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    marginBottom: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <h4 style={{ margin: 0 }}>Custom Decoration Overlay</h4>
                 </div>
-              )}
-            </>
-          )}
 
-          <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-            <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-              <h4 style={{ margin: 0 }}>Custom Decoration Overlay</h4>
-            </div>
-
-            {/* Decoration upload */}
-            <div style={{ marginBottom: 12 }}>
-              <input
-                ref={decoInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleDecoUpload}
-                style={{ display: "none" }}
-              />
-              <button onClick={() => decoInputRef.current?.click()}>
-                <Upload size={16} /> Upload Decoration
-              </button>
-              {decoOverlay && (
-                <button onClick={() => setDecoOverlay(null)} style={{ marginLeft: 8 }}>
-                  <X size={16} /> Clear Deco
-                </button>
-              )}
+                {/* Decoration upload */}
+                <div style={{ marginBottom: 12 }}>
+                  <input
+                    ref={decoInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleDecoUpload}
+                    style={{ display: "none" }}
+                  />
+                  <button onClick={() => decoInputRef.current?.click()}>
+                    <Upload size={16} /> Upload Decoration
+                  </button>
+                  {decoOverlay && (
+                    <button
+                      onClick={() => setDecoOverlay(null)}
+                      style={{ marginLeft: 8 }}
+                    >
+                      <X size={16} /> Clear Deco
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-
-        </div>
-
+        )}
 
         {/* Capture UI */}
         {running && (
-          <div style={{ position: "absolute", top: 300, left: 440, fontSize: 48, textAlign: "center", margin: "20px 0" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: 300,
+              left: 440,
+              fontSize: 48,
+              textAlign: "center",
+              margin: "20px 0",
+            }}
+          >
             {count > 0 ? count : "📸"}
           </div>
         )}
 
         {/* Thumbnails */}
         {photos.length > 0 && (
-          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+          <div
+            style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}
+          >
             {photos.map((p, i) => (
               <img
                 key={i}
                 src={p}
                 alt={`shot ${i + 1}`}
-                style={{ width: 80, height: 80, objectFit: "cover", border: "1px solid #ccc" }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  objectFit: "cover",
+                  border: "1px solid #ccc",
+                }}
               />
             ))}
           </div>

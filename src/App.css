@@ -133,6 +133,12 @@
     width: 100%;
     max-width: 400px;
   }
+  .ColorBackground{
+    padding: 5px;
+    width: 400px;
+    height: 230px;
+    background-color: #764ba2;
+  }
 }
 @media only screen and (min-width: 1500px) {
   .footerMain {
@@ -148,5 +154,11 @@
   .videoStreamed {
     width: 100%;
     max-width: 600px;
+  }
+  .ColorBackground{
+    padding: 5px;
+    width: 600px;
+    height: 345px;
+    background-color: #764ba2;
   }
 }
