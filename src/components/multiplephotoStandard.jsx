@@ -433,7 +433,7 @@ const MultiplePhotoStandard = forwardRef(
         </div>
 
         {/* Frame Management */}
-        <div style={{ marginBottom: 12, padding: 12, background: "#f5f5f5", borderRadius: 4 }}>
+        <div style={{ display: "grid", gridTemplateColumns: 2, marginBottom: 12, padding: 12, background: "#f5f5f5", borderRadius: 4 }}>
           <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
             <h4 style={{ margin: 0 }}>Custom Frames</h4>
             <button onClick={() => setShowFrameManager(!showFrameManager)} style={{ fontSize: 12 }}>
@@ -528,26 +528,34 @@ const MultiplePhotoStandard = forwardRef(
               )}
             </>
           )}
+
+          <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+              <h4 style={{ margin: 0 }}>Custom Decoration Overlay</h4>
+            </div>
+
+            {/* Decoration upload */}
+            <div style={{ marginBottom: 12 }}>
+              <input
+                ref={decoInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleDecoUpload}
+                style={{ display: "none" }}
+              />
+              <button onClick={() => decoInputRef.current?.click()}>
+                <Upload size={16} /> Upload Decoration
+              </button>
+              {decoOverlay && (
+                <button onClick={() => setDecoOverlay(null)} style={{ marginLeft: 8 }}>
+                  <X size={16} /> Clear Deco
+                </button>
+              )}
+            </div>
+          </div>
+
         </div>
 
-        {/* Decoration upload */}
-        <div style={{ marginBottom: 12 }}>
-          <input
-            ref={decoInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleDecoUpload}
-            style={{ display: "none" }}
-          />
-          <button onClick={() => decoInputRef.current?.click()}>
-            <Upload size={16} /> Upload Decoration
-          </button>
-          {decoOverlay && (
-            <button onClick={() => setDecoOverlay(null)} style={{ marginLeft: 8 }}>
-              <X size={16} /> Clear Deco
-            </button>
-          )}
-        </div>
 
         {/* Capture UI */}
         {running && (
