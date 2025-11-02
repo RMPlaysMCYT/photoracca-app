@@ -15,7 +15,7 @@ import {
 
 import "./css/buttons.css";
 import "./css/MultiPhotStanCtrl.css";
-
+import "./css/MultiPhotStanFrameMgr.css";
 
 // Optional: import icons if lucide-react is installed, otherwise use text fallbacks
 let Trash2, Save, Upload, X;
@@ -421,41 +421,42 @@ const MultiplePhotoStandard = forwardRef(
     };
 
     return (
-      <div className="MultiPhotStanCtrl" style={{ padding: 20 }}>
-        <h3>Multiple Photo Standard</h3>
+      <div className="MultiPhotStanCtrl">
+        <div className="" style={{ padding: 20 }}>
+          <h3>Multiple Photo Standard</h3>
 
-        {/* Layout & Shots Controls */}
-        <div
-          style={{
-            display: "flex",
-            gap: 12,
-            marginBottom: 12,
-            flexWrap: "wrap",
-          }}
-        >
-          <label>
-            Layout:
-            <select
-              value={layoutState}
-              onChange={(e) => setLayoutState(e.target.value)}
-            >
-              <option value="4x6">4×6 inch</option>
-              <option value="2x6">2×6 inch</option>
-            </select>
-          </label>
+          {/* Layout & Shots Controls */}
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              marginBottom: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <label>
+              Layout:
+              <select
+                value={layoutState}
+                onChange={(e) => setLayoutState(e.target.value)}
+              >
+                <option value="4x6">4×6 inch</option>
+                <option value="2x6">2×6 inch</option>
+              </select>
+            </label>
 
-          <label>
-            Shots:
-            <select
-              value={shotsCount}
-              onChange={(e) => setShotsCount(Number(e.target.value))}
-            >
-              <option value={2}>2</option>
-              <option value={4}>4</option>
-            </select>
-          </label>
+            <label>
+              Shots:
+              <select
+                value={shotsCount}
+                onChange={(e) => setShotsCount(Number(e.target.value))}
+              >
+                <option value={2}>2</option>
+                <option value={4}>4</option>
+              </select>
+            </label>
 
-          {/* <label>
+            {/* <label>
             Border (mm):
             <input
               type="number"
@@ -468,7 +469,7 @@ const MultiplePhotoStandard = forwardRef(
             />
           </label> */}
 
-          {/* <label>
+            {/* <label>
             Frame scope:
             <select
               value={frameScope}
@@ -479,7 +480,7 @@ const MultiplePhotoStandard = forwardRef(
             </select>
           </label> */}
 
-          {/* <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {/* <label style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <input
               type="checkbox"
               checked={showGuides}
@@ -488,256 +489,265 @@ const MultiplePhotoStandard = forwardRef(
             Show print guides
           </label> */}
 
-          <button
-            className="ButtonDesign0"
-            onClick={() => setShowDecoFrameManager(!showDecoFrameManager)}
-          >
-            {showDecoFrameManager ? "Hide" : "Show"} Manager
-          </button>
-        </div>
-
-        {showDecoFrameManager && (
-          <div>
-            {/* Frame Management */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: 2,
-                marginBottom: 12,
-                padding: 12,
-                background: "#f5f5f5",
-                borderRadius: 4,
-              }}
+            <button
+              className="ButtonDesign0"
+              onClick={() => setShowDecoFrameManager(!showDecoFrameManager)}
             >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  marginBottom: 8,
-                  alignItems: "center",
-                }}
-              >
-                <h4 style={{ margin: 0 }}>Custom Frames</h4>
-                <button
-                  onClick={() => setShowFrameManager(!showFrameManager)}
-                  style={{ fontSize: 12 }}
-                >
-                  {showFrameManager ? "Hide" : "Show"} Manager
-                </button>
-              </div>
+              {showDecoFrameManager ? "Hide" : "Show"} Manager
+            </button>
+          </div>
 
-              {showFrameManager && (
-                <>
-                  {/* Upload new frame */}
-                  <div style={{ marginBottom: 12 }}>
-                    <input
-                      ref={frameInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFrameUpload}
-                      style={{ display: "none" }}
-                    />
+          {showDecoFrameManager && (
+            <div>
+              {/* Frame Management */}
+              <div>
+                <div className="MultiFrame">
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      marginBottom: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <h4 style={{ margin: 0 }}>Custom Frames</h4>
                     <button
-                      onClick={() => frameInputRef.current?.click()}
-                      style={{ display: "flex", alignItems: "center", gap: 4 }}
+                      onClick={() => setShowFrameManager(!showFrameManager)}
+                      style={{ fontSize: 12 }}
                     >
-                      <Upload size={16} /> Upload Frame Image
+                      {showFrameManager ? "Hide" : "Show"} Manager
                     </button>
-                    {frameOverlay && !selectedFrameId && (
-                      <button
-                        onClick={() => setFrameOverlay(null)}
-                        style={{ marginLeft: 8 }}
-                      >
-                        <X size={16} /> Clear
-                      </button>
-                    )}
                   </div>
 
-                  {/* Save frame */}
-                  {frameOverlay && !selectedFrameId && (
-                    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                      <input
-                        type="text"
-                        placeholder="Frame name..."
-                        value={frameName}
-                        onChange={(e) => setFrameName(e.target.value)}
-                        style={{ flex: 1 }}
-                      />
-                      <button
-                        onClick={handleSaveFrame}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <Save size={16} /> Save Frame
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Saved frames list */}
-                  {savedFrames.length > 0 && (
-                    <div>
-                      <p style={{ fontSize: 12, margin: "8px 0 4px" }}>
-                        Saved frames for {layoutState}:
-                      </p>
-                      <div
-                        style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
-                      >
-                        {savedFrames.map((frame) => (
-                          <div
-                            key={frame.id}
-                            style={{
-                              border:
-                                selectedFrameId === frame.id
-                                  ? "2px solid #007bff"
-                                  : "1px solid #ccc",
-                              borderRadius: 4,
-                              padding: 8,
-                              cursor: "pointer",
-                              background:
-                                selectedFrameId === frame.id
-                                  ? "#e7f3ff"
-                                  : "#fff",
-                              position: "relative",
-                            }}
-                            onClick={() => handleLoadFrame(frame.id)}
+                  {showFrameManager && (
+                    <>
+                      {/* Upload new frame */}
+                      <div style={{ marginBottom: 12 }}>
+                        <input
+                          ref={frameInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFrameUpload}
+                          style={{ display: "none" }}
+                        />
+                        <button
+                          onClick={() => frameInputRef.current?.click()}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          <Upload size={16} /> Upload Frame Image
+                        </button>
+                        {frameOverlay && !selectedFrameId && (
+                          <button
+                            onClick={() => setFrameOverlay(null)}
+                            style={{ marginLeft: 8 }}
                           >
-                            <img
-                              src={frame.dataUrl}
-                              alt={frame.name}
-                              style={{
-                                width: 60,
-                                height: 60,
-                                objectFit: "contain",
-                                display: "block",
-                              }}
-                            />
-                            <p
-                              style={{
-                                margin: "4px 0 0",
-                                fontSize: 11,
-                                textAlign: "center",
-                              }}
-                            >
-                              {frame.name}
-                            </p>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteFrame(frame.id);
-                              }}
-                              style={{
-                                position: "absolute",
-                                top: 2,
-                                right: 2,
-                                padding: 2,
-                                background: "#ff4444",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: 2,
-                                cursor: "pointer",
-                              }}
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        ))}
+                            <X size={16} /> Clear
+                          </button>
+                        )}
                       </div>
-                    </div>
+
+                      {/* Save frame */}
+                      {frameOverlay && !selectedFrameId && (
+                        <div
+                          style={{ display: "flex", gap: 8, marginBottom: 12 }}
+                        >
+                          <input
+                            type="text"
+                            placeholder="Frame name..."
+                            value={frameName}
+                            onChange={(e) => setFrameName(e.target.value)}
+                            style={{ flex: 1 }}
+                          />
+                          <button
+                            onClick={handleSaveFrame}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 4,
+                            }}
+                          >
+                            <Save size={16} /> Save Frame
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Saved frames list */}
+                      {savedFrames.length > 0 && (
+                        <div>
+                          <p style={{ fontSize: 12, margin: "8px 0 4px" }}>
+                            Saved frames for {layoutState}:
+                          </p>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: 8,
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            {savedFrames.map((frame) => (
+                              <div
+                                key={frame.id}
+                                style={{
+                                  border:
+                                    selectedFrameId === frame.id
+                                      ? "2px solid #007bff"
+                                      : "1px solid #ccc",
+                                  borderRadius: 4,
+                                  padding: 8,
+                                  cursor: "pointer",
+                                  background:
+                                    selectedFrameId === frame.id
+                                      ? "#e7f3ff"
+                                      : "#fff",
+                                  position: "relative",
+                                }}
+                                onClick={() => handleLoadFrame(frame.id)}
+                              >
+                                <img
+                                  src={frame.dataUrl}
+                                  alt={frame.name}
+                                  style={{
+                                    width: 60,
+                                    height: 60,
+                                    objectFit: "contain",
+                                    display: "block",
+                                  }}
+                                />
+                                <p
+                                  style={{
+                                    margin: "4px 0 0",
+                                    fontSize: 11,
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  {frame.name}
+                                </p>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteFrame(frame.id);
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: 2,
+                                    right: 2,
+                                    padding: 2,
+                                    background: "#ff4444",
+                                    color: "#fff",
+                                    border: "none",
+                                    borderRadius: 2,
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
-                </>
-              )}
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  marginBottom: 8,
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    marginBottom: 8,
-                    alignItems: "center",
-                  }}
-                >
-                  <h4 style={{ margin: 0 }}>Custom Decoration Overlay</h4>
-                </div>
-
-                {/* Decoration upload */}
-                <div style={{ marginBottom: 12 }}>
-                  <input
-                    ref={decoInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleDecoUpload}
-                    style={{ display: "none" }}
-                  />
-                  <button onClick={() => decoInputRef.current?.click()}>
-                    <Upload size={16} /> Upload Decoration
-                  </button>
-                  {decoOverlay && (
-                    <button
-                      onClick={() => setDecoOverlay(null)}
-                      style={{ marginLeft: 8 }}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      marginBottom: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        marginBottom: 8,
+                        alignItems: "center",
+                      }}
                     >
-                      <X size={16} /> Clear Deco
-                    </button>
-                  )}
+                      <h4 style={{ margin: 0 }}>Custom Decoration Overlay</h4>
+                    </div>
+
+                    {/* Decoration upload */}
+                    <div style={{ marginBottom: 12 }}>
+                      <input
+                        ref={decoInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleDecoUpload}
+                        style={{ display: "none" }}
+                      />
+                      <button onClick={() => decoInputRef.current?.click()}>
+                        <Upload size={16} /> Upload Decoration
+                      </button>
+                      {decoOverlay && (
+                        <button
+                          onClick={() => setDecoOverlay(null)}
+                          style={{ marginLeft: 8 }}
+                        >
+                          <X size={16} /> Clear Deco
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Capture UI */}
-        {running && (
-          <div
-            style={{
-              position: "absolute",
-              top: 300,
-              left: 440,
-              fontSize: 48,
-              textAlign: "center",
-              margin: "20px 0",
-            }}
-          >
-            {count > 0 ? count : "📸"}
-          </div>
-        )}
+          {/* Capture UI */}
+          {running && (
+            <div
+              style={{
+                position: "absolute",
+                top: 300,
+                left: 440,
+                fontSize: 48,
+                textAlign: "center",
+                margin: "20px 0",
+              }}
+            >
+              {count > 0 ? count : "📸"}
+            </div>
+          )}
 
-        {/* Thumbnails */}
-        {photos.length > 0 && (
-          <div
-            style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}
-          >
-            {photos.map((p, i) => (
-              <img
-                key={i}
-                src={p}
-                alt={`shot ${i + 1}`}
-                style={{
-                  width: 80,
-                  height: 80,
-                  objectFit: "cover",
-                  border: "1px solid #ccc",
-                }}
-              />
-            ))}
-          </div>
-        )}
+          {/* Thumbnails */}
+          {photos.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                marginTop: 12,
+                flexWrap: "wrap",
+              }}
+            >
+              {photos.map((p, i) => (
+                <img
+                  key={i}
+                  src={p}
+                  alt={`shot ${i + 1}`}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    objectFit: "cover",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              ))}
+            </div>
+          )}
 
-        {/* Download */}
-        {photos.length === shotsCount && (
-          <button onClick={downloadFinal} style={{ marginTop: 12 }}>
-            Save Photo ({layoutState}, {shotsCount} shots)
-          </button>
-        )}
+          {/* Download */}
+          {photos.length === shotsCount && (
+            <button onClick={downloadFinal} style={{ marginTop: 12 }}>
+              Save Photo ({layoutState}, {shotsCount} shots)
+            </button>
+          )}
+        </div>
       </div>
     );
   }
