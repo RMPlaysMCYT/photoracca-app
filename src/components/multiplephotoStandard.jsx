@@ -502,6 +502,8 @@ const MultiplePhotoStandard = forwardRef(
               {/* Frame Management */}
               <div>
                 <div className="MultiFrame">
+                  <div>Frame Manager</div>
+                  <div>X</div>
                   <div
                     style={{
                       display: "flex",
