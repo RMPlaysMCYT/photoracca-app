@@ -417,7 +417,7 @@ const MultiplePhotoStandard = forwardRef(
             ? canvasH - Math.max(fontPx * 0.6, bottomReservedPx > 0 ? bottomReservedPx * 0.5 : fontPx)
             : canvasH - Math.max(fontPx, ppi * 0.15);
           ctx.save();
-          ctx.font = `${fontPx}px "Playfair Display", "Times New Roman", serif`;
+          ctx.font = `${fontPx}px "Playwrite AU SA Thin", "Times New Roman", serif`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.lineWidth = Math.max(2, fontPx * 0.08);

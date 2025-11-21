@@ -68,3 +68,7 @@ ___
 
 ### Libraries and References
 - FileSaverJS [MIT LICENSE](https://www.npmjs.com/package/file-saver)
+- FONT LICENSES:
+-- Inter [OFL 1.1 LICENSE](https://fonts.google.com/specimen/Inter) [SOURCE](https://rsms.me/inter/)
+-- Poppins [SIL OFL 1.1 LICENSE](https://fonts.google.com/specimen/Poppins) [SOURCE](https://github.com/itfoundry/Poppins)
+-- Playwrite AU SA [SIL OFL 1.1](https://fonts.google.com/specimen/Playwrite+AU+SA) [SOURCE](https://primarium.info/countries/australia/)

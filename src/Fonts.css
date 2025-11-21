@@ -1,0 +1,12 @@
+/*
+// Source - https://stackoverflow.com/a
+// Posted by Dan Abramov, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-21, License - CC BY-SA 4.0
+*/
+
+@font-face {
+  font-family: 'Playwrite AU SA Thin';
+  src: local('Playwrite AU SA Thin'), url(./assets/fonts/PlaywriteAUSA[wght].ttf) format('truetype');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
+}
