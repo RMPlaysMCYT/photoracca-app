@@ -18,6 +18,24 @@ import "./css/MultiPhotStanCtrl.css";
 import "./css/MultiPhotStanMgr.css";
 import "./css/MultiPhotStanFrameMgr.css";
 
+const formatTimestamp = (dateInput, forFilename = false) => {
+  const date = dateInput ? new Date(dateInput) : new Date();
+  if (forFilename) {
+    const pad = (num) => String(num).padStart(2, "0");
+    return (
+      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+      `_${pad(date.getHours())}-${pad(date.getMinutes())}-${pad(date.getSeconds())}`
+    );
+  }
+  return date.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 // Optional: import icons if lucide-react is installed, otherwise use text fallbacks
 let Trash2, Save, Upload, X;
 try {
@@ -68,6 +86,8 @@ const MultiplePhotoStandard = forwardRef(
     const [borderMm, setBorderMm] = useState(3.5);
     const [topReservedMm, setTopReservedMm] = useState(0);
     const [bottomReservedMm, setBottomReservedMm] = useState(0);
+    const [timestampEnabled, setTimestampEnabled] = useState(true);
+    const [captureTimestamp, setCaptureTimestamp] = useState(null);
 
     // Frame management states
     const [savedFrames, setSavedFrames] = useState([]);
@@ -265,6 +285,7 @@ const MultiplePhotoStandard = forwardRef(
     useImperativeHandle(ref, () => ({
       startStrip: () => {
         if (running) return;
+        setCaptureTimestamp(new Date());
         setPhotos([]);
         setCurrentIndex(0);
         setRunning(true);
@@ -376,6 +397,37 @@ const MultiplePhotoStandard = forwardRef(
         );
         const slotH = availableHeight / rows;
 
+        const drawGuides = () => {
+          ctx.strokeStyle = "rgba(0,0,0,0.3)";
+          ctx.setLineDash([5, 5]);
+          ctx.lineWidth = 1;
+          for (let c = 1; c < cols; c++) {
+            ctx.strokeRect(c * slotW, topReservedPx, 0, availableHeight);
+          }
+          for (let r = 1; r < rows; r++) {
+            ctx.strokeRect(0, topReservedPx + r * slotH, canvasW, 0);
+          }
+        };
+
+        const drawTimestampStamp = () => {
+          if (!timestampEnabled) return;
+          const stampText = formatTimestamp(captureTimestamp || new Date());
+          const fontPx = Math.max(14, Math.round(ppi * 0.12));
+          const yBase = layoutState === "2x6"
+            ? canvasH - Math.max(fontPx * 0.6, bottomReservedPx > 0 ? bottomReservedPx * 0.5 : fontPx)
+            : canvasH - Math.max(fontPx, ppi * 0.15);
+          ctx.save();
+          ctx.font = `${fontPx}px "Playfair Display", "Times New Roman", serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.lineWidth = Math.max(2, fontPx * 0.08);
+          ctx.strokeStyle = "rgba(0,0,0,0.6)";
+          ctx.strokeText(stampText, canvasW / 2, yBase);
+          ctx.fillStyle = "#f5f5f5";
+          ctx.fillText(stampText, canvasW / 2, yBase);
+          ctx.restore();
+        };
+
         const drawSlot = (img, col, row) => {
           const x = col * slotW;
           const y = topReservedPx + row * slotH;
@@ -439,36 +491,12 @@ const MultiplePhotoStandard = forwardRef(
 
               if (frameScope === "canvas" && frameImageRef.current) {
                 ctx.drawImage(frameImageRef.current, 0, 0, canvasW, canvasH);
-                if (showGuides) {
-                  ctx.strokeStyle = "rgba(0,0,0,0.3)";
-                  ctx.setLineDash([5, 5]);
-                  ctx.lineWidth = 1;
-                  for (let c = 1; c < cols; c++)
-                    ctx.strokeRect(
-                      c * slotW,
-                      topReservedPx,
-                      0,
-                      availableHeight
-                    );
-                  for (let r = 1; r < rows; r++)
-                    ctx.strokeRect(0, topReservedPx + r * slotH, canvasW, 0);
-                }
+                if (showGuides) drawGuides();
+                drawTimestampStamp();
                 resolve(finalCanvas.toDataURL("image/png"));
               } else {
-                if (showGuides) {
-                  ctx.strokeStyle = "rgba(0,0,0,0.3)";
-                  ctx.setLineDash([5, 5]);
-                  ctx.lineWidth = 1;
-                  for (let c = 1; c < cols; c++)
-                    ctx.strokeRect(
-                      c * slotW,
-                      topReservedPx,
-                      0,
-                      availableHeight
-                    );
-                  for (let r = 1; r < rows; r++)
-                    ctx.strokeRect(0, topReservedPx + r * slotH, canvasW, 0);
-                }
+                if (showGuides) drawGuides();
+                drawTimestampStamp();
                 resolve(finalCanvas.toDataURL("image/png"));
               }
             }
@@ -482,9 +510,10 @@ const MultiplePhotoStandard = forwardRef(
       const dataUrl = await composeFinalImage();
       if (!dataUrl) return;
 
+      const stampForFile = formatTimestamp(captureTimestamp || new Date(), true);
       const link = document.createElement("a");
       link.href = dataUrl;
-      link.download = `photoracca_${layoutState}_${shotsCount}shots_${Date.now()}.png`;
+      link.download = `photoracca_${layoutState}_${shotsCount}shots_${stampForFile}.png`;
       link.click();
     };
 
@@ -555,6 +584,15 @@ const MultiplePhotoStandard = forwardRef(
                 </label>
               </>
             )}
+
+            <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <input
+                type="checkbox"
+                checked={timestampEnabled}
+                onChange={(e) => setTimestampEnabled(e.target.checked)}
+              />
+              Stamp date & time
+            </label>
 
             {/* <label>
             Border (mm):
