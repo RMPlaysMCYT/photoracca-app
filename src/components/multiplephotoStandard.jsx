@@ -506,6 +506,16 @@ const MultiplePhotoStandard = forwardRef(
       });
     };
 
+
+    const handlePrint = async () => {
+      const dataUrl = await composeFinalImage();
+      await window.electronAPI.printStrip({
+        dataUrl,
+        layout: layoutState, // "2x6"
+        deviceName: selectedPrinter?.deviceName
+      });
+    };
+
     const downloadFinal = async () => {
       const dataUrl = await composeFinalImage();
       if (!dataUrl) return;
@@ -934,6 +944,11 @@ const MultiplePhotoStandard = forwardRef(
           {photos.length === shotsCount && (
             <button onClick={downloadFinal} style={{ marginTop: 12 }}>
               Save Photo ({layoutState}, {shotsCount} shots)
+            </button>
+          )}
+          {photos.length === shotsCount && (
+            <button onClick={handlePrint} style={{ marginTop: 12 }}>
+              Print Photo ({layoutState}, {shotsCount} shots)
             </button>
           )}
         </div>
