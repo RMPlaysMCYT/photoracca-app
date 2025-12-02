@@ -23,8 +23,12 @@ const formatTimestamp = (dateInput, forFilename = false) => {
   if (forFilename) {
     const pad = (num) => String(num).padStart(2, "0");
     return (
-      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
-      `_${pad(date.getHours())}-${pad(date.getMinutes())}-${pad(date.getSeconds())}`
+      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate()
+      )}` +
+      `_${pad(date.getHours())}-${pad(date.getMinutes())}-${pad(
+        date.getSeconds()
+      )}`
     );
   }
   return date.toLocaleString(undefined, {
@@ -413,9 +417,14 @@ const MultiplePhotoStandard = forwardRef(
           if (!timestampEnabled) return;
           const stampText = formatTimestamp(captureTimestamp || new Date());
           const fontPx = Math.max(14, Math.round(ppi * 0.12));
-          const yBase = layoutState === "2x6"
-            ? canvasH - Math.max(fontPx * 0.6, bottomReservedPx > 0 ? bottomReservedPx * 0.5 : fontPx)
-            : canvasH - Math.max(fontPx, ppi * 0.15);
+          const yBase =
+            layoutState === "2x6"
+              ? canvasH -
+                Math.max(
+                  fontPx * 0.6,
+                  bottomReservedPx > 0 ? bottomReservedPx * 0.5 : fontPx
+                )
+              : canvasH - Math.max(fontPx, ppi * 0.15);
           ctx.save();
           ctx.font = `${fontPx}px "Playwrite AU SA Thin", "Times New Roman", serif`;
           ctx.textAlign = "center";
@@ -506,21 +515,71 @@ const MultiplePhotoStandard = forwardRef(
       });
     };
 
-
     const handlePrint = async () => {
       const dataUrl = await composeFinalImage();
-      await window.electronAPI.printStrip({
-        dataUrl,
-        layout: layoutState, // "2x6"
-        deviceName: selectedPrinter?.deviceName
-      });
+      if (!dataUrl) return;
+
+      const canUseElectron =
+        typeof window !== "undefined" && window.electronAPI?.printStrip;
+      if (canUseElectron) {
+        try {
+          await window.electronAPI.printStrip({
+            dataUrl,
+            layout: layoutState,
+          });
+          return;
+        } catch (err) {
+          console.error("Silent Electron print failed; falling back", err);
+        }
+      }
+
+      if (typeof window === "undefined") return;
+
+      const popup = window.open("", "_blank", "noopener,noreferrer");
+      if (!popup) {
+        window.alert("Please enable pop-ups to print.");
+        return;
+      }
+
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Print Photo</title>
+            <style>
+              @page { size: ${layoutState === "2x6" ? "2in 6in" : "4in 6in"}; margin:0; }
+              html, body { margin:0; padding:0; width:100%; height:100%; }
+              body { display:flex; justify-content:center; align-items:center; background:#fff; }
+              img { width:100%; height:100%; object-fit:contain; }
+            </style>
+          </head>
+          <body>
+            <img id="strip" src="${dataUrl}" />
+            <script>
+              const img = document.getElementById('strip');
+              img.onload = () => {
+                window.focus();
+                window.print();
+                window.close();
+              };
+            <\/script>
+          </body>
+        </html>
+      `;
+
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
     };
 
     const downloadFinal = async () => {
       const dataUrl = await composeFinalImage();
       if (!dataUrl) return;
 
-      const stampForFile = formatTimestamp(captureTimestamp || new Date(), true);
+      const stampForFile = formatTimestamp(
+        captureTimestamp || new Date(),
+        true
+      );
       const link = document.createElement("a");
       link.href = dataUrl;
       link.download = `photoracca_${layoutState}_${shotsCount}shots_${stampForFile}.png`;
@@ -539,12 +598,13 @@ const MultiplePhotoStandard = forwardRef(
               gap: 12,
               marginBottom: 12,
               flexWrap: "wrap",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <label className="">
               Layout:
-              <select
+              <select 
+                  className="Layout00"
                 value={layoutState}
                 onChange={(e) => setLayoutState(e.target.value)}
               >
@@ -555,12 +615,13 @@ const MultiplePhotoStandard = forwardRef(
 
             <label>
               Shots:
-              <select
+              <select 
+                  className="Layout00"
                 value={shotsCount}
                 onChange={(e) => setShotsCount(Number(e.target.value))}
               >
-                <option value={2}>2</option>
-                <option value={4}>4</option>
+                <option className="LayoutSelector0" value={2}>2</option>
+                <option className="LayoutSelector0" value={4}>4</option>
               </select>
             </label>
 
@@ -569,6 +630,7 @@ const MultiplePhotoStandard = forwardRef(
                 <label>
                   Top spacing (mm):
                   <input
+                  className="Layout00"
                     type="number"
                     min="0"
                     max="120"
@@ -581,6 +643,7 @@ const MultiplePhotoStandard = forwardRef(
                 <label>
                   Bottom spacing (mm):
                   <input
+                  className="Layout00"
                     type="number"
                     min="0"
                     max="120"
@@ -700,7 +763,7 @@ const MultiplePhotoStandard = forwardRef(
                     gap: 8,
                     marginBottom: 8,
                     alignItems: "center",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
                   }}
                 >
                   <h4 style={{ margin: 0 }}>Custom Frames</h4>
@@ -846,13 +909,13 @@ const MultiplePhotoStandard = forwardRef(
 
                 <div style={{ marginTop: 16 }}>
                   <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    marginBottom: 8,
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      marginBottom: 8,
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
                   >
                     <h4 style={{ margin: "0 0 8px" }}>
                       Custom Decoration Overlay
@@ -941,16 +1004,26 @@ const MultiplePhotoStandard = forwardRef(
           )}
 
           {/* Download */}
-          {photos.length === shotsCount && (
-            <button onClick={downloadFinal} style={{ marginTop: 12 }}>
-              Save Photo ({layoutState}, {shotsCount} shots)
-            </button>
-          )}
-          {photos.length === shotsCount && (
-            <button onClick={handlePrint} style={{ marginTop: 12 }}>
-              Print Photo ({layoutState}, {shotsCount} shots)
-            </button>
-          )}
+          <div className="saveButtons">
+            {photos.length === shotsCount && (
+              <button
+                className="saveButton1"
+                onClick={downloadFinal}
+                style={{ marginTop: 12 }}
+              >
+                Save Photo ({layoutState}, {shotsCount} shots)
+              </button>
+            )}
+            {/* {photos.length === shotsCount && (
+              <button
+                className="saveButton1"
+                onClick={handlePrint}
+                style={{ marginTop: 12 }}
+              >
+                Print Photo ({layoutState}, {shotsCount} shots)
+              </button>
+            )} */}
+          </div>
         </div>
       </div>
     );

@@ -13,3 +13,15 @@
     border: 0px;
     width: 90px;
 }
+
+.Layout00{
+    background-color: aquamarine;
+    padding: 7px;
+    border: 0px;
+    width: 90px;
+}
+
+.LayoutSelector0{
+ border: 0px;
+ /* box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); */
+}
